@@ -19,6 +19,13 @@ class LoginController extends Controller
 
         $token = Auth::attempt($request->only(['email', 'password']));
 
+        if (!$token) {
+            return response()->json(
+                ['message' => 'The provided credentials don\'t match our records!'],
+                404
+            );
+        }
+
         return new AuthenticatedResource((object)[
             'message' => "logged-in successfully.",
             'token' => $token,
