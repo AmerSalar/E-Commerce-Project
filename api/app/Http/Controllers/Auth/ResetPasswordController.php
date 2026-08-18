@@ -57,4 +57,39 @@ class ResetPasswordController extends Controller
             'message' => 'Verification code was sent to the provided email.'
         ], 200);
     }
+
+    public function verify(Request $request)
+    {
+
+        $table = "password_reset_codes";
+        // front-end must save the email of step-1 in memory/state
+        $request->validate([
+            'email' => ['required', 'email'],
+            'code' => ['required', 'string', 'size:6']
+        ]);
+
+        $email = strtolower(trim($request->input('email')));
+        $record = DB::table($table)->where('email', $email)->first();
+
+        if (
+            !$record ||
+            now()->isAfter($record->expires_at) ||
+            !Hash::check($request->input('code'), $record->code)
+        ) {
+            return response()->json(['message' => "Invalid or expired code!"], 401);
+        }
+
+        $token = Str::random(64);
+
+        DB::table($table)
+            ->where('email', $email)
+            ->update([
+                'reset_token' => Hash::make($token)
+            ]);
+
+        return response()->json([
+            'message' => "Verified. you can now reset password.",
+            'reset_token' => $token
+        ], 200);
+    }
 }
