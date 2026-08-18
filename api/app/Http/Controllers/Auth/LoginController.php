@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\DTO\AuthData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
@@ -26,10 +27,12 @@ class LoginController extends Controller
             );
         }
 
-        return new AuthenticatedResource((object)[
-            'message' => "logged-in successfully.",
-            'token' => $token,
-            'user' => Auth::user()
-        ]);
+        $data = new AuthData(
+            user: Auth::user(),
+            token: $token,
+            message: "logged-in successfully.",
+        );
+
+        return new AuthenticatedResource($data);
     }
 }

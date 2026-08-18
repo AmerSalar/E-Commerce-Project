@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\DTO\AuthData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
@@ -23,10 +24,12 @@ class RegisterController extends Controller
 
         $token = Auth::login($user);
 
-        return new AuthenticatedResource((object)[
-            'message' => "registered successfully.",
-            'token' => $token,
-            'user' => $user
-        ]);
+        $data = new AuthData(
+            user: $user,
+            token: $token,
+            message: "Registered successfully.",
+        );
+
+        return new AuthenticatedResource($data);
     }
 }
