@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
+use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -22,8 +23,8 @@ class RegisterController extends Controller
 
         $token = Auth::login($user);
 
-        return response()->json([
-            'message' => 'Registered successfully.',
+        return new AuthenticatedResource((object)[
+            'message' => "registered successfully.",
             'token' => $token,
             'user' => $user
         ]);
