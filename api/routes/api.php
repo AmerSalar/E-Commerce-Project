@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -21,4 +22,6 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
+    Route::post('/change-password', ChangePasswordController::class)
+        ->name('change-password');
 });
