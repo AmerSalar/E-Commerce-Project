@@ -8,8 +8,10 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/register', RegisterController::class)->name('register');
-Route::post('/login', LoginController::class)->name('login');
+Route::post('/register', RegisterController::class)->name('register')
+    ->middleware('throttle:20,1');
+Route::post('/login', LoginController::class)->name('login')
+    ->middleware('throttle:10,1');
 
 Route::post('/forgot-password', [ResetPasswordController::class, 'forgot'])
     ->name('forgot-password')

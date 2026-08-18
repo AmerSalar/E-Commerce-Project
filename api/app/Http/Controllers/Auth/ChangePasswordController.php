@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Auth\AuthenticatedResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,15 +20,30 @@ class ChangePasswordController extends Controller
                 'password' => [
                     'required',
                     'confirmed',
+                    'different:old_password',
                     Password::default()->letters()->numbers()->symbols()
                 ]
             ]
         );
 
-        Auth::user()->update([
+        $user = Auth::user();
+
+        $user->update([
             'password' => Hash::make($request->input('password'))
         ]);
 
-        return response()->json(['message' => 'Password updated successfully.'], 200);
+        // true to force blacklisting forever
+        Auth::invalidate(true);
+
+        // generate new token
+        $token = Auth::login($user);
+
+        return new AuthenticatedResource(
+            (object)[
+                'message' => "Password updated successfully.",
+                'token' => $token,
+                'user' => $user
+            ]
+        );
     }
 }

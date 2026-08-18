@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -22,7 +22,7 @@ class LoginController extends Controller
         if (!$token) {
             return response()->json(
                 ['message' => 'The provided credentials don\'t match our records!'],
-                404
+                401
             );
         }
 
