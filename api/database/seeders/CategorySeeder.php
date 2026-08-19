@@ -10,7 +10,7 @@ class CategorySeeder extends Seeder
 {
     private $categories = [
         ['name' => 'console'],
-        ['name' => 'disk'],
+        ['name' => 'disc'],
         ['name' => 'pc'],
         ['name' => 'ps4'],
         ['name' => 'ps5'],

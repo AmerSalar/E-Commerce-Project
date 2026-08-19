@@ -22,6 +22,12 @@ class ProductSeeder extends Seeder
             'quantity'    => 12,
         ],
         [
+            'name'        => 'Red Dead Redemption 2 PS5',
+            'description' => 'Action RPG disc.',
+            'price'       => 69.99,
+            'quantity'    => 25,
+        ],
+        [
             'name'        => 'PS4 Slim 1TB',
             'description' => 'Not provided',
             'price'       => 249.99,
@@ -75,6 +81,6 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        Product::insert([...$this->products, 'created_at' => now(), 'updated_at' => now()]);
+        Product::insert($this->products);
     }
 }
