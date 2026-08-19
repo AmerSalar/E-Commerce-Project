@@ -39,4 +39,6 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{product}', [ProductController::class, 'getSingleProduct'])
         ->missing($productNotFound);
     Route::post('/', [ProductController::class, 'storeProduct']);
+    Route::post('/{product}', [ProductController::class, 'updateProduct'])
+        ->missing($productNotFound);;
 });

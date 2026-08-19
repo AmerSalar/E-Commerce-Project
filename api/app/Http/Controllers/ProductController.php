@@ -7,6 +7,7 @@ use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -34,11 +35,44 @@ class ProductController extends Controller
     }
     public function storeProduct(SaveProductRequest $request)
     {
-        $attributes = $request->validated();
+        $validated = $request->validated();
 
-        $product = Product::create($attributes);
-        $product->categories()->attach($request->input('category_ids'));
+        $product = DB::transaction(function () use ($validated) {
+            $product = Product::create($validated);
 
-        return new ProductResource($product);
+            if (!empty($validated['category_ids'])) {
+                $product->categories()->attach($validated['category_ids']);
+            }
+
+            return $product;
+        });
+
+        return response()->json([
+            'message' => 'product stored successfully.',
+            'product' => new ProductResource($product->load('categories'))
+        ], 201);
+    }
+    public function updateProduct(SaveProductRequest $request, Product $product)
+    {
+        $validated = $request->validated();
+
+        $product->update($validated);
+
+        // transaction means do all, if one of them fails, everyone fail too
+
+        DB::transaction(function () use ($product, $request, $validated) {
+            $product->update($validated);
+
+            if ($request->has('category_ids')) {
+                $product->categories()->sync(
+                    $validated['category_ids'] ?? []
+                );
+            }
+        });
+
+        return response()->json([
+            'message' => 'product updated successfully.',
+            'product' => new ProductResource($product->load('categories'))
+        ]);
     }
 }
