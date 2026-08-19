@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\SaveProductRequest;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
@@ -84,7 +85,7 @@ class ProductController extends Controller
             'message' => 'product deleted successfully.'
         ], 200);
     }
-    public function productNotFound()
+    public static function productNotFound()
     {
         return response()->json([
             'message' => 'Product not found!'

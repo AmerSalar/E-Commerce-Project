@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,4 +44,11 @@ Route::prefix('products')
             ->missing([ProductController::class, 'productNotFound']);
         Route::delete('/{product}', 'destroyProduct')
             ->missing([ProductController::class, 'productNotFound']);
+    });
+Route::prefix('categories')
+    ->name('categories.')
+    ->controller(CategoryController::class)
+    ->group(function () {
+
+        Route::get('/', 'getAll');
     });
