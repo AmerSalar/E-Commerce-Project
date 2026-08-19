@@ -25,9 +25,6 @@ class ProductController extends Controller
     }
     public function getSingleProduct(Request $request, Product $product)
     {
-        if (!$product) {
-            return response()->json(['message' => 'not found']);
-        }
         $include = $request->query('include');
         if ($include === 'categories') {
             $product = $product->load('categories');
@@ -51,7 +48,7 @@ class ProductController extends Controller
         });
 
         return response()->json([
-            'message' => 'product stored successfully.',
+            'message' => 'product created successfully.',
             'product' => new ProductResource($product->load('categories'))
         ], 201);
     }

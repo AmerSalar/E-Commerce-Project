@@ -51,4 +51,11 @@ Route::prefix('categories')
     ->group(function () {
 
         Route::get('/', 'getAll');
+        Route::get('/{category}', 'getOne')
+            ->missing([CategoryController::class, 'notFound']);
+        Route::post('/', 'store');
+        Route::post('/{category}',  'update')
+            ->missing([CategoryController::class, 'notFound']);
+        Route::delete('/{category}',  'destroy')
+            ->missing([CategoryController::class, 'notFound']);
     });
