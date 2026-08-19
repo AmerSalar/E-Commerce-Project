@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -30,7 +31,19 @@ Route::middleware('auth:api')->group(function () {
         ->name('change-password');
 });
 
-
+Route::prefix('users')
+    ->name('users.')
+    ->controller(UserController::class)
+    ->group(function () {
+        Route::get('/', 'getAll');
+        Route::get('/{user}', 'getOne')
+            ->missing([UserController::class, 'notFound']);
+        Route::post('/', 'store');
+        Route::post('/{user}',  'update')
+            ->missing([UserController::class, 'notFound']);
+        Route::delete('/{user}',  'destroy')
+            ->missing([UserController::class, 'notFound']);
+    });
 Route::prefix('products')
     ->name('products.')
     ->controller(ProductController::class)
