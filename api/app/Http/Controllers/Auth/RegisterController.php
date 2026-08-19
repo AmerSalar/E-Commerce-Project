@@ -8,7 +8,6 @@ use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class RegisterController extends Controller
 {
