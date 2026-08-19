@@ -73,8 +73,21 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'product updated successfully.',
             'product' => new ProductResource($product->load('categories'))
-        ]);
+        ], 200);
     }
 
-    public function destroy(Product $product) {}
+    public function destroyProduct(Product $product)
+    {
+        $product->delete();
+
+        return response()->json([
+            'message' => 'product deleted successfully.'
+        ], 200);
+    }
+    public function productNotFound()
+    {
+        return response()->json([
+            'message' => 'Product not found!'
+        ], 404);
+    }
 }

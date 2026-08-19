@@ -30,15 +30,17 @@ Route::middleware('auth:api')->group(function () {
 });
 
 
-Route::prefix('products')->name('products.')->group(function () {
-    $productNotFound = fn() => response()->json([
-        'message' => 'Product not found!'
-    ], 404);
+Route::prefix('products')
+    ->name('products.')
+    ->controller(ProductController::class)
+    ->group(function () {
 
-    Route::get('/', [ProductController::class, 'getProducts']);
-    Route::get('/{product}', [ProductController::class, 'getSingleProduct'])
-        ->missing($productNotFound);
-    Route::post('/', [ProductController::class, 'storeProduct']);
-    Route::post('/{product}', [ProductController::class, 'updateProduct'])
-        ->missing($productNotFound);;
-});
+        Route::get('/', 'getProducts');
+        Route::get('/{product}', 'getSingleProduct')
+            ->missing([ProductController::class, 'productNotFound']);
+        Route::post('/', 'storeProduct');
+        Route::post('/{product}',  'updateProduct')
+            ->missing([ProductController::class, 'productNotFound']);
+        Route::delete('/{product}', 'destroyProduct')
+            ->missing([ProductController::class, 'productNotFound']);
+    });

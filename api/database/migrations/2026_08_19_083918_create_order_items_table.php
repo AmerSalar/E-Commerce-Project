@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
             $table->unsignedInteger('quantity')->default(1);
             $table->unique(['order_id', 'product_id']);
-            $table->string('item_name', 128);
+            $table->string('item_name', 128)->nullable();
             $table->decimal('item_price', 8, 2)->default(0.00);
             $table->timestamps();
         });
