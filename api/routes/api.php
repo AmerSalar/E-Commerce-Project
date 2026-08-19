@@ -29,6 +29,14 @@ Route::middleware('auth:api')->group(function () {
         ->name('change-password');
 });
 
+
 Route::prefix('products')->name('products.')->group(function () {
+    $productNotFound = fn() => response()->json([
+        'message' => 'Product not found!'
+    ], 404);
+
     Route::get('/', [ProductController::class, 'getProducts']);
+    Route::get('/{product}', [ProductController::class, 'getSingleProduct'])
+        ->missing($productNotFound);
+    Route::post('/', [ProductController::class, 'storeProduct']);
 });
