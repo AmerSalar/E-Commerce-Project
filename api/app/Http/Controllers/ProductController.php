@@ -37,6 +37,8 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
+        // transaction means do all, if one of them fails, everyone fail too
+
         $product = DB::transaction(function () use ($validated) {
             $product = Product::create($validated);
 
@@ -58,8 +60,6 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        // transaction means do all, if one of them fails, everyone fail too
-
         DB::transaction(function () use ($product, $request, $validated) {
             $product->update($validated);
 
@@ -75,4 +75,6 @@ class ProductController extends Controller
             'product' => new ProductResource($product->load('categories'))
         ]);
     }
+
+    public function destroy(Product $product) {}
 }
