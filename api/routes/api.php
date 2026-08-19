@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -26,4 +27,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     Route::post('/change-password', ChangePasswordController::class)
         ->name('change-password');
+});
+
+Route::prefix('products')->name('products.')->group(function () {
+    Route::get('/', [ProductController::class, 'getProducts']);
 });
