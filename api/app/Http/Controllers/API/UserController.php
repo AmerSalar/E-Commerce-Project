@@ -46,6 +46,18 @@ class UserController extends Controller
     }
     public function assignRole(User $user, int $role_id)
     {
+        if (Gate::denies('updateRole', $user)) {
+            return response()->json([
+                'message' => 'You cannot assign roles to this user!'
+            ], 403);
+        };
+
+        if ($role_id === 1) {
+            return response()->json([
+                'message' => 'You cannot assign this role!'
+            ], 403);
+        }
+
         // if user already has role, just pass an OK status
         $user->roles()->syncWithoutDetaching($role_id);
 
@@ -56,6 +68,11 @@ class UserController extends Controller
     }
     public function revokeRole(User $user, int $role_id)
     {
+        if (Gate::denies('updateRole', $user)) {
+            return response()->json([
+                'message' => 'You cannot revoke roles of this user!'
+            ], 403);
+        };
 
         $detached = $user->roles()->detach($role_id);
 
@@ -73,20 +90,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        Gate::define('delete-user', function (User $authUser) use ($user) {
-            // no deleting owner
-            if ($user->hasRole('super_admin')) {
-                return false;
-            }
-
-            // no deleting self
-            if ($authUser->id === $user->id) {
-                return false;
-            }
-            return $authUser->hasRole(['admin', 'super_admin']);
-        });
-
-        if (Gate::denies('delete-user')) {
+        if (Gate::denies('deleteUser', $user)) {
             return response()->json([
                 'message' => 'This user account cannot be deleted!'
             ], 403);
