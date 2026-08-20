@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('role_id')->nullable()->constrained()->nullOnDelete();
+            $table->unique(['user_id', 'role_id']);
             $table->timestamps();
         });
     }
