@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
@@ -79,4 +80,10 @@ Route::prefix('categories')
             ->missing([CategoryController::class, 'notFound']);
         Route::delete('/{category}',  'destroy')
             ->missing([CategoryController::class, 'notFound']);
+    });
+Route::prefix('carts')
+    ->name('carts.')
+    ->group(function () {
+        Route::get('/my-cart', [CartController::class, 'getCart']);
+        Route::post('/my-cart/{product}', [CartController::class, 'push']);
     });
