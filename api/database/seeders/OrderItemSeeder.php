@@ -19,9 +19,20 @@ class OrderItemSeeder extends Seeder
         $items = Product::all();
 
         $orders->each(function ($order) use ($items) {
-            $order->items()->attach(
-                $items->random(rand(1, 3))->pluck('id')
-            );
+            $randomProducts = $items->random(rand(1, 3));
+
+            $pivotTableData = [];
+
+            foreach ($randomProducts as $product) {
+                $pivotTableData[$product->id] = [
+                    // this is for a snapshot, maybe if product was changed in future, this stays
+                    'item_name' => $product->name,
+                    'item_price' => $product->price,
+                    'quantity' => rand(1, 3),
+                ];
+            }
+
+            $order->items()->attach($pivotTableData);
         });
     }
 }
