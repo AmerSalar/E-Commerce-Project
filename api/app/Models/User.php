@@ -64,4 +64,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Order::class);
     }
+
+    public function hasRole(string $role)
+    {
+        return $this->roles()->whereIn('name', $role)->exists();
+    }
 }
