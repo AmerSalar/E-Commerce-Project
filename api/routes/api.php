@@ -39,8 +39,16 @@ Route::prefix('users')
         Route::get('/{user}', 'getOne')
             ->missing([UserController::class, 'notFound']);
         Route::post('/', 'store');
-        Route::post('/{user}',  'update')
+        Route::post('/{user}',  'updateName')
             ->missing([UserController::class, 'notFound']);
+
+
+        // FIX THESE LATER (ERROR HANDLING)
+        Route::post('/{user}/roles/{role}',  'assignRole')
+            ->missing([UserController::class, 'notFound']);
+        Route::delete('/{user}/roles/{role}',  'revokeRole')
+            ->missing([UserController::class, 'notFound']);
+
         Route::delete('/{user}',  'destroy')
             ->missing([UserController::class, 'notFound']);
     });
