@@ -12,6 +12,7 @@ use App\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -72,6 +73,27 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        Gate::define('delete-user', function (User $authUser) use ($user) {
+            // no deleting owner
+            if ($user->hasRole('super_admin')) {
+                return false;
+            }
+
+            // no deleting self
+            if ($authUser->id === $user->id) {
+                return false;
+            }
+
+            // FIX LATER (make a new hasRole method that accepts array)
+            return $authUser->hasRole('admin') || $authUser->hasRole('super_admin');
+        });
+
+        if (Gate::denies('delete-user')) {
+            return response()->json([
+                'message' => 'This user account cannot be deleted!'
+            ], 403);
+        };
+
         $user->delete();
 
         return response()->json([
