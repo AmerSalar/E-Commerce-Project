@@ -9,6 +9,7 @@ use Illuminate\Database\Seeder;
 class RoleSeeder extends Seeder
 {
     private $roles = [
+        ['name' => 'super_admin'],
         ['name' => 'admin'],
         ['name' => 'manager'],
         ['name' => 'driver'],
