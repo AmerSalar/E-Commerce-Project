@@ -83,9 +83,7 @@ class UserController extends Controller
             if ($authUser->id === $user->id) {
                 return false;
             }
-
-            // FIX LATER (make a new hasRole method that accepts array)
-            return $authUser->hasRole('admin') || $authUser->hasRole('super_admin');
+            return $authUser->hasRole(['admin', 'super_admin']);
         });
 
         if (Gate::denies('delete-user')) {
