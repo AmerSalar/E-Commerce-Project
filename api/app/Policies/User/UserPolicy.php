@@ -14,6 +14,12 @@ class UserPolicy
         //
     }
 
+    public function updateName(User $authUser, User $user)
+    {
+        return $authUser->hasRole(['admin', 'super_admin']) ||
+            $authUser->id === $user->id;
+    }
+
     public function deleteUser(User $authUser, User $user)
     {
         // no deleting owner

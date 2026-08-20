@@ -36,6 +36,12 @@ class UserController extends Controller
 
     public function updateName(UpdateNameRequest $request, User $user)
     {
+        if (Gate::denies('updateName', $user)) {
+            return response()->json([
+                'message' => 'You are not allowed to change name of this user!'
+            ], 401);
+        }
+
         $validated = $request->validated();
         $user->update($validated);
 
@@ -92,7 +98,7 @@ class UserController extends Controller
     {
         if (Gate::denies('deleteUser', $user)) {
             return response()->json([
-                'message' => 'This user account cannot be deleted!'
+                'message' => 'You cannot delete this user account!'
             ], 403);
         };
 
