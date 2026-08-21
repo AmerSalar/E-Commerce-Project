@@ -85,4 +85,14 @@ class CartController extends Controller
             'cart' => new CartResource($cart->load('items'))
         ]);
     }
+
+    public function abandon(Request $request)
+    {
+        $cart = $request->user()->cart()->firstOrCreate();
+        $cart->items()->detach();
+
+        return response()->json([
+            'message' => 'Cart abandoned, and reset to empty.',
+        ], 200);
+    }
 }

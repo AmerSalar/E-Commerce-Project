@@ -84,6 +84,7 @@ Route::middleware('auth:api')->group(function () {
         ->name('carts.')
         ->group(function () {
             Route::get('/my-cart', [CartController::class, 'getCart']);
+            Route::delete('/my-cart', [CartController::class, 'abandon']);
             Route::post('/my-cart/{product}', [CartController::class, 'push']);
             Route::delete('/my-cart/{product}', [CartController::class, 'pull']);
         });
