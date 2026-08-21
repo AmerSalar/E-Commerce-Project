@@ -95,4 +95,11 @@ class CartController extends Controller
             'message' => 'Cart abandoned, and reset to empty.',
         ], 200);
     }
+
+    public static function notFound()
+    {
+        return response()->json([
+            'message' => 'Product not found!'
+        ], 404);
+    }
 }
