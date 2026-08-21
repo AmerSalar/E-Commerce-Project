@@ -22,9 +22,9 @@ class Cart extends Model
     public function total(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->items->sum(
+            get: fn() => round($this->items->sum(
                 fn($product) => $product->price * $product->pivot->quantity
-            )
+            ), 2)
         );
     }
 }

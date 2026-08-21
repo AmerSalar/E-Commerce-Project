@@ -46,7 +46,10 @@ class CartController extends Controller
             $product->id => ['quantity' => $totalWantedQuantity]
         ]);
 
-        return new CartResource($cart->load('items'));
+        return response()->json([
+            'message' => "Item pushed into cart successfully.",
+            'cart' => new CartResource($cart->load('items'))
+        ]);
     }
 
     public function pull(Request $request, Product $product)
