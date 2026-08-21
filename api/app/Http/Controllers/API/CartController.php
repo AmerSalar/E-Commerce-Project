@@ -15,7 +15,7 @@ class CartController extends Controller
 {
     public function getCart(Request $request)
     {
-        $cart = $request->user()->cart->load('items');
+        $cart = $request->user()->cart()->firstOrCreate()->load('items');
         return new CartResource($cart);
     }
     public function push(Request $request, Product $product)
