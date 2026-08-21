@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Auth\ChangePasswordController;
@@ -89,5 +90,10 @@ Route::middleware('auth:api')->group(function () {
                 ->missing([CartController::class, 'notFound']);
             Route::delete('/my-cart/{product}', [CartController::class, 'pull'])
                 ->missing([CartController::class, 'notFound']);
+        });
+    Route::prefix('orders')
+        ->name('orders.')
+        ->group(function () {
+            Route::post('/order-now', [OrderController::class, 'orderNow']);
         });
 });
