@@ -25,4 +25,8 @@ class Order extends Model
     {
         return $this->belongsToMany(Product::class, 'order_items');
     }
+
+    protected $casts = [
+        'address_snapshot' => 'array'
+    ];
 }

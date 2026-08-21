@@ -21,7 +21,12 @@ class OrderFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
-            'address_id' => Address::inRandomOrder()->first()->id,
+            'address_snapshot' => [
+                'phone' => fake()->phoneNumber(),
+                'city' => fake()->city(),
+                'street' => fake()->streetAddress(),
+                'building' => 'Building ' . fake()->buildingNumber()
+            ],
         ];
     }
 }
