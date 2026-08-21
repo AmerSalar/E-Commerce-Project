@@ -15,32 +15,25 @@ class CartController extends Controller
 {
     public function getCart(Request $request)
     {
-        $user = $request->user();
-        $cart = $user->cart->load('items');
+        $cart = $request->user()->cart->load('items');
         return new CartResource($cart);
     }
     public function push(Request $request, Product $product)
     {
         $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:50']]);
-        $quantity = $request->input('quantity') ?? 1;
-        $cartItemQuantity = 0;
+        // user desired quantity from form request or by default = 1
+        $userQuantity = $request->integer('quantity', 1);
 
-        if ($request->user()->cart->items()->where('product_id', $product)->exists()) {
+        // get already existing quantity if not then 0
+        $cartItemQuantity = Auth::user()->cart?->items()
+            ->where('cart_items.product_id', $product->id)
+            ->value('cart_items.quantity') ?? 0;
 
-            $cartItemQuantity = DB::table('cart_items')->whereRaw(
-                'cart_id = ? AND product_id = ?',
-                [
-                    $request->user()->cart->id,
-                    $product->id
-                ]
-            )->first()->quantity;
-        }
-
-
+        // syncWithoutDetaching is like update or insert,
+        // either update existing value, or add new one
         $request->user()->cart->items()->syncWithoutDetaching([
-            $product->id => ['quantity' => $quantity + $cartItemQuantity]
+            $product->id => ['quantity' => $userQuantity + $cartItemQuantity]
         ]);
-
 
         $cart = $request->user()->cart->load('items');
         return new CartResource($cart);
