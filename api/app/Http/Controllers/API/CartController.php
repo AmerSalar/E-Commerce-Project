@@ -29,6 +29,15 @@ class CartController extends Controller
             ->where('cart_items.product_id', $product->id)
             ->value('cart_items.quantity') ?? 0;
 
+        $totalWantedQuantity = $userQuantity + $cartItemQuantity;
+        if ($totalWantedQuantity > $product->quantity) {
+            return response()->json([
+                'message' => "Only {$product->quantity} in stock, failed to add to cart!",
+                'desired_quantity' => $totalWantedQuantity,
+                'currently_in_cart' => $cartItemQuantity
+            ], 422);
+        }
+
         // syncWithoutDetaching is like update or insert,
         // either update existing value, or add new one
         $request->user()->cart->items()->syncWithoutDetaching([
@@ -38,4 +47,6 @@ class CartController extends Controller
         $cart = $request->user()->cart->load('items');
         return new CartResource($cart);
     }
+
+    public function pull(Request $request, Product $product) {}
 }

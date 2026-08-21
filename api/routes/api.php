@@ -30,60 +30,60 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     Route::post('/change-password', ChangePasswordController::class)
         ->name('change-password');
+
+    Route::prefix('users')
+        ->name('users.')
+        ->controller(UserController::class)
+        ->group(function () {
+            Route::get('/', 'getAll');
+            Route::get('/{user}', 'getOne')
+                ->missing([UserController::class, 'notFound']);
+            Route::post('/', 'store');
+            Route::post('/{user}',  'updateName')
+                ->missing([UserController::class, 'notFound']);
+
+
+            // FIX THESE LATER (ERROR HANDLING)
+            Route::post('/{user}/roles/{role}',  'assignRole')
+                ->missing([UserController::class, 'notFound']);
+            Route::delete('/{user}/roles/{role}',  'revokeRole')
+                ->missing([UserController::class, 'notFound']);
+
+            Route::delete('/{user}',  'destroy')
+                ->missing([UserController::class, 'notFound']);
+        });
+    Route::prefix('products')
+        ->name('products.')
+        ->controller(ProductController::class)
+        ->group(function () {
+
+            Route::get('/', 'getProducts');
+            Route::get('/{product}', 'getSingleProduct')
+                ->missing([ProductController::class, 'productNotFound']);
+            Route::post('/', 'storeProduct');
+            Route::post('/{product}',  'updateProduct')
+                ->missing([ProductController::class, 'productNotFound']);
+            Route::delete('/{product}', 'destroyProduct')
+                ->missing([ProductController::class, 'productNotFound']);
+        });
+    Route::prefix('categories')
+        ->name('categories.')
+        ->controller(CategoryController::class)
+        ->group(function () {
+
+            Route::get('/', 'getAll');
+            Route::get('/{category}', 'getOne')
+                ->missing([CategoryController::class, 'notFound']);
+            Route::post('/', 'store');
+            Route::post('/{category}',  'update')
+                ->missing([CategoryController::class, 'notFound']);
+            Route::delete('/{category}',  'destroy')
+                ->missing([CategoryController::class, 'notFound']);
+        });
+    Route::prefix('carts')
+        ->name('carts.')
+        ->group(function () {
+            Route::get('/my-cart', [CartController::class, 'getCart']);
+            Route::post('/my-cart/{product}', [CartController::class, 'push']);
+        });
 });
-
-Route::prefix('users')
-    ->name('users.')
-    ->controller(UserController::class)
-    ->group(function () {
-        Route::get('/', 'getAll');
-        Route::get('/{user}', 'getOne')
-            ->missing([UserController::class, 'notFound']);
-        Route::post('/', 'store');
-        Route::post('/{user}',  'updateName')
-            ->missing([UserController::class, 'notFound']);
-
-
-        // FIX THESE LATER (ERROR HANDLING)
-        Route::post('/{user}/roles/{role}',  'assignRole')
-            ->missing([UserController::class, 'notFound']);
-        Route::delete('/{user}/roles/{role}',  'revokeRole')
-            ->missing([UserController::class, 'notFound']);
-
-        Route::delete('/{user}',  'destroy')
-            ->missing([UserController::class, 'notFound']);
-    });
-Route::prefix('products')
-    ->name('products.')
-    ->controller(ProductController::class)
-    ->group(function () {
-
-        Route::get('/', 'getProducts');
-        Route::get('/{product}', 'getSingleProduct')
-            ->missing([ProductController::class, 'productNotFound']);
-        Route::post('/', 'storeProduct');
-        Route::post('/{product}',  'updateProduct')
-            ->missing([ProductController::class, 'productNotFound']);
-        Route::delete('/{product}', 'destroyProduct')
-            ->missing([ProductController::class, 'productNotFound']);
-    });
-Route::prefix('categories')
-    ->name('categories.')
-    ->controller(CategoryController::class)
-    ->group(function () {
-
-        Route::get('/', 'getAll');
-        Route::get('/{category}', 'getOne')
-            ->missing([CategoryController::class, 'notFound']);
-        Route::post('/', 'store');
-        Route::post('/{category}',  'update')
-            ->missing([CategoryController::class, 'notFound']);
-        Route::delete('/{category}',  'destroy')
-            ->missing([CategoryController::class, 'notFound']);
-    });
-Route::prefix('carts')
-    ->name('carts.')
-    ->group(function () {
-        Route::get('/my-cart', [CartController::class, 'getCart']);
-        Route::post('/my-cart/{product}', [CartController::class, 'push']);
-    });
