@@ -55,20 +55,21 @@ class OrderController extends Controller
             ]);
 
             // attach the order items from the cart items
+            $pivotTableData = [];
             foreach ($cart->items as $item) {
-                $order->items()->attach([
-                    'product_id' => $item->id,
+                $pivotTableData[$item->id] = [
                     'item_name' => $item->name,
                     'item_price' => $item->price,
                     'quantity' => $item->pivot->quantity,
                     'created_at' => now(),
                     'updated_at' => now()
-                ]);
+                ];
 
                 // take the quantity from the stock
                 $products->get($item->id)
                     ->decrement('quantity', $item->pivot->quantity);
             }
+            $order->items()->attach($pivotTableData);
 
             // empty the cart
             $cart->items()->detach();
