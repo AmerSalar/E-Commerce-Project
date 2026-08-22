@@ -66,7 +66,8 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => $request->user()->id,
                 'address_snapshot' => $validatedAddress,
-                'total' => $cart->total
+                'total' => $cart->total,
+                'status' => "pending"
             ]);
 
             // attach the order items from the cart items
@@ -100,10 +101,7 @@ class OrderController extends Controller
 
     public function cancelOrder(Request $request, Order $order)
     {
-        $order = $request->user()->orders()
-            ->where('id', $order->id)->first();
-
-        if (!$order) {
+        if (Gate::denies('cancel-order', $order)) {
             return response()->json([
                 'message' => 'You are not authorized to cancel this order!'
             ], 403);
@@ -139,7 +137,7 @@ class OrderController extends Controller
     {
         if (Gate::denies('deliver-order')) {
             return response()->json([
-                'message' => 'You are not authorized to deliver order!'
+                'message' => 'You are not authorized to deliver this order!'
             ], 403);
         }
 

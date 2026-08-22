@@ -15,6 +15,11 @@ class OrderPolicy
         //
     }
 
+    public function cancel(User $authUser, Order $order)
+    {
+        return $authUser->hasRole(['admin', 'super_admin'])
+            || $authUser->id === $order->user_id;
+    }
     public function deliver(User $authUser)
     {
         return $authUser->hasRole(['driver', 'admin', 'super_admin']);
