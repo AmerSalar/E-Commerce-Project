@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
@@ -110,7 +111,7 @@ class OrderController extends Controller
 
         if ($order->status !== "pending") {
             return response()->json([
-                'message' => 'this order may be cancelled already or delivered, cannot cancel!'
+                'message' => "Cannot cancel this order, because it is {$order->status}!"
             ], 422);
         }
 
@@ -131,6 +132,28 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'order cancelled successfully.'
+        ], 200);
+    }
+
+    public function deliverOrder(Order $order)
+    {
+        if (Gate::denies('deliver-order')) {
+            return response()->json([
+                'message' => 'You are not authorized to deliver order!'
+            ], 403);
+        }
+
+        if ($order->status !== "pending") {
+            return response()->json([
+                'message' => "Cannot deliver this order, because it is {$order->status}!"
+            ], 422);
+        }
+
+        $order->update(['status' => 'delivered']);
+
+        return response()->json([
+            'message' => 'Order delivered successfully.',
+            'order' => new OrderResource($order->load('items'))
         ], 200);
     }
     public static function notFound()
