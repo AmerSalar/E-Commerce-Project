@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateNameRequest;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -35,7 +36,7 @@ class UserController extends Controller
         if (Gate::denies('updateName', $user)) {
             return response()->json([
                 'message' => 'You are not allowed to change name of this user!'
-            ], 401);
+            ], 403);
         }
 
         $validated = $request->validated();
@@ -54,7 +55,14 @@ class UserController extends Controller
             ], 403);
         };
 
-        if ($role_id === 1) {
+        $role = Role::where('id', $role_id)->first();
+        if (!$role) {
+            return response()->json([
+                'message' => 'This role does not exist!'
+            ], 404);
+        }
+
+        if ($role->name === "super_admin") {
             return response()->json([
                 'message' => 'You cannot assign this role!'
             ], 403);
