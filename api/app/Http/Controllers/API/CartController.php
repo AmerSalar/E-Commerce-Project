@@ -7,6 +7,7 @@ use App\Http\Resources\Cart\CartResource;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\User;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,27 +25,40 @@ class CartController extends Controller
         // user desired quantity from form request or by default = 1
         $userQuantity = $request->integer('quantity', 1);
 
-        $cart = $request->user()->cart()->firstOrCreate();
+        try {
+            $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
+                $lockedProduct = Product::where('id', $product->id)
+                    ->lockForUpdate()
+                    ->first();
 
-        // get already existing quantity if not then 0
-        $cartItemQuantity = $cart->items()
-            ->where('cart_items.product_id', $product->id)
-            ->value('cart_items.quantity') ?? 0;
+                $cart = $request->user()->cart()->firstOrCreate();
 
-        $totalWantedQuantity = $userQuantity + $cartItemQuantity;
-        if ($totalWantedQuantity > $product->quantity) {
-            return response()->json([
-                'message' => "Only {$product->quantity} in stock, failed to add to cart!",
-                'desired_quantity' => $totalWantedQuantity,
-                'currently_in_cart' => $cartItemQuantity
-            ], 422);
+                // get already existing quantity if not then 0
+                $cartItemQuantity = $cart->items()
+                    ->where('cart_items.product_id', $lockedProduct->id)
+                    ->value('cart_items.quantity') ?? 0;
+
+                $totalWantedQuantity = $userQuantity + $cartItemQuantity;
+                if ($totalWantedQuantity > $lockedProduct->quantity) {
+                    abort(response()->json([
+                        'message' => "Only {$lockedProduct->quantity} in stock, failed to add to cart!",
+                        'desired_quantity' => $totalWantedQuantity,
+                        'currently_in_cart' => $cartItemQuantity
+                    ], 422));
+                }
+
+                // syncWithoutDetaching is like update or insert,
+                // either update existing value, or add new one
+                $cart->items()->syncWithoutDetaching([
+                    $lockedProduct->id => ['quantity' => $totalWantedQuantity]
+                ]);
+
+                return $cart;
+            });
+        } catch (HttpResponseException $e) {
+            // for the custom error we have inside the DB transaction
+            return $e->getResponse();
         }
-
-        // syncWithoutDetaching is like update or insert,
-        // either update existing value, or add new one
-        $cart->items()->syncWithoutDetaching([
-            $product->id => ['quantity' => $totalWantedQuantity]
-        ]);
 
         return response()->json([
             'message' => "Item pushed into cart successfully.",
@@ -58,27 +72,42 @@ class CartController extends Controller
         // user desired quantity from form request or by default = 1
         $userQuantity = $request->integer('quantity', 1);
 
-        $cart = $request->user()->cart()->firstOrCreate();
+        try {
+            $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
 
-        $cartItemQuantity = $cart->items()
-            ->where('cart_items.product_id', $product->id)
-            ->value('cart_items.quantity') ?? 0;
+                $cart = $request->user()->cart()->firstOrCreate();
 
-        $calculatedQuantity = $cartItemQuantity - $userQuantity;
-        if ($calculatedQuantity < 0) {
-            return response()->json([
-                'message' => "Only {$cartItemQuantity} in cart, failed to pull from cart!",
-                'desired_quantity' => $userQuantity,
-                'currently_in_cart' => $cartItemQuantity
-            ], 422);
+                $cartItemQuantity = $cart->items()
+                    ->where('cart_items.product_id', $product->id)
+                    ->value('cart_items.quantity') ?? 0;
+                if ($cartItemQuantity === 0) {
+                    abort(response()->json([
+                        'message' => "This item does not exist inside the cart!"
+                    ], 422));
+                }
+
+                $calculatedQuantity = $cartItemQuantity - $userQuantity;
+                if ($calculatedQuantity < 0) {
+                    abort(response()->json([
+                        'message' => "Only {$cartItemQuantity} in cart, failed to pull from cart!",
+                        'desired_quantity' => $userQuantity,
+                        'currently_in_cart' => $cartItemQuantity
+                    ], 422));
+                }
+                if ($calculatedQuantity === 0) {
+                    $cart->items()->detach($product->id);
+                } else {
+                    $cart->items()->syncWithoutDetaching([
+                        $product->id => ['quantity' => $calculatedQuantity]
+                    ]);
+                }
+
+                return $cart;
+            });
+        } catch (HttpResponseException $e) {
+            return $e->getResponse();
         }
-        if ($calculatedQuantity === 0) {
-            $cart->items()->detach($product->id);
-        } else {
-            $cart->items()->syncWithoutDetaching([
-                $product->id => ['quantity' => $calculatedQuantity]
-            ]);
-        }
+
 
         return response()->json([
             'message' => "Item pulled from cart successfully.",
