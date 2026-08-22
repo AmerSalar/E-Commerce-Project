@@ -94,11 +94,14 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('orders')
         ->name('orders.')
         ->group(function () {
-            Route::get('/', [OrderController::class, 'getPendingOrders']);
+            Route::get('/', [OrderController::class, 'getAll']);
+            Route::get('/pending', [OrderController::class, 'getPendingOrders']);
             Route::post('/order-now', [OrderController::class, 'orderNow']);
             Route::post('/deliver/{order}', [OrderController::class, 'deliverOrder'])
                 ->missing([OrderController::class, 'notFound']);
             Route::delete('/cancel/{order}', [OrderController::class, 'cancelOrder'])
+                ->missing([OrderController::class, 'notFound']);
+            Route::get('/{order}', [OrderController::class, 'getOne'])
                 ->missing([OrderController::class, 'notFound']);
         });
 });

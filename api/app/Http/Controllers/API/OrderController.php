@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
+    public function getAll(Request $request)
+    {
+        $perPage = $request->query('perPage', 4);
+        $orders = $request->user()->orders()
+            ->with('items')->paginate($perPage);
+        if ($orders->isEmpty()) {
+            return response()->noContent();
+        }
+
+        return new OrderCollection($orders);
+    }
+    public function getOne(Order $order)
+    {
+        if (Gate::denies('my-order', $order)) {
+            return response()->json([
+                'message' => 'You are not authorized to access this order!'
+            ], 403);
+        }
+
+        return new OrderResource($order->load('items'));
+    }
     public function getPendingOrders(Request $request)
     {
         $perPage = $request->query('perPage', 4);
@@ -26,6 +47,7 @@ class OrderController extends Controller
 
         return new OrderCollection($orders);
     }
+
     public function orderNow(AddressSnapshotRequest $request)
     {
         $validatedAddress = $request->validated();
@@ -101,7 +123,7 @@ class OrderController extends Controller
 
     public function cancelOrder(Request $request, Order $order)
     {
-        if (Gate::denies('cancel-order', $order)) {
+        if (Gate::denies('my-order', $order)) {
             return response()->json([
                 'message' => 'You are not authorized to cancel this order!'
             ], 403);

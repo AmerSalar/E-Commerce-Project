@@ -26,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(User::class, UserPolicy::class);
         Gate::define('deliver-order', [OrderPolicy::class, 'deliver']);
-        Gate::define('cancel-order', [OrderPolicy::class, 'cancel']);
+        Gate::define('my-order', [OrderPolicy::class, 'getOne']);
     }
 }

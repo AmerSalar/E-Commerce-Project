@@ -15,7 +15,7 @@ class OrderPolicy
         //
     }
 
-    public function cancel(User $authUser, Order $order)
+    public function getOne(User $authUser, Order $order)
     {
         return $authUser->hasRole(['admin', 'super_admin'])
             || $authUser->id === $order->user_id;
