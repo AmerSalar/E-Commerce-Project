@@ -12,7 +12,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
-
+// public routes VVVVVVVVVVVVVVVVVVVVVVVVVV
 Route::post('/register', RegisterController::class)->name('register')
     ->middleware('throttle:10,1');
 Route::post('/login', LoginController::class)->name('login')
@@ -26,7 +26,31 @@ Route::post('/verify-code', [ResetPasswordController::class, 'verify'])
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('reset-password');
 
+Route::prefix('products')
+    ->name('products.')
+    ->controller(ProductController::class)
+    ->group(function () {
 
+        Route::get('/', 'getProducts');
+        Route::get('/{product}', 'getSingleProduct')
+            ->missing([ProductController::class, 'productNotFound']);
+    });
+Route::prefix('categories')
+    ->name('categories.')
+    ->controller(CategoryController::class)
+    ->group(function () {
+
+        Route::get('/', 'getAll');
+        Route::get('/{category}', 'getOne')
+            ->missing([CategoryController::class, 'notFound']);
+    });
+
+
+
+
+
+
+// private routes VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     Route::post('/change-password', ChangePasswordController::class)
@@ -58,9 +82,6 @@ Route::middleware('auth:api')->group(function () {
         ->controller(ProductController::class)
         ->group(function () {
 
-            Route::get('/', 'getProducts');
-            Route::get('/{product}', 'getSingleProduct')
-                ->missing([ProductController::class, 'productNotFound']);
             Route::post('/', 'storeProduct');
             Route::post('/{product}',  'updateProduct')
                 ->missing([ProductController::class, 'productNotFound']);
@@ -72,9 +93,6 @@ Route::middleware('auth:api')->group(function () {
         ->controller(CategoryController::class)
         ->group(function () {
 
-            Route::get('/', 'getAll');
-            Route::get('/{category}', 'getOne')
-                ->missing([CategoryController::class, 'notFound']);
             Route::post('/', 'store');
             Route::post('/{category}',  'update')
                 ->missing([CategoryController::class, 'notFound']);
