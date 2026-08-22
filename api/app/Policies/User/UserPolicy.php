@@ -48,4 +48,9 @@ class UserPolicy
 
         return $authUser->hasRole(['admin', 'super_admin']);
     }
+
+    public function manage(User $authUser)
+    {
+        return $authUser->hasRole(['manager', 'super_admin', 'admin']);
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
@@ -33,6 +34,12 @@ class ProductController extends Controller
     }
     public function storeProduct(SaveProductRequest $request)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to create a product!',
+            ], 403);
+        }
+
         $validated = $request->validated();
 
         // transaction means do all, if one of them fails, everyone fail too

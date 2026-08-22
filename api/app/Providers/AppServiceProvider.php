@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(User::class, UserPolicy::class);
+        Gate::define('manage', [UserPolicy::class, 'manage']);
         Gate::define('deliver-order', [OrderPolicy::class, 'deliver']);
         Gate::define('my-order', [OrderPolicy::class, 'getOne']);
     }
