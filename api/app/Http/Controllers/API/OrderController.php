@@ -8,6 +8,7 @@ use App\Http\Resources\Order\OrderCollection;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -60,60 +61,68 @@ class OrderController extends Controller
             ], 422);
         }
 
-        // we add a transaction to safely do the actions
-        $order = DB::transaction(function () use ($request, $cart, $validatedAddress) {
-            // we lock products to avoid stock updates
-            $productIds = $cart->items->pluck('id');
-            $products = Product::whereIn('id', $productIds)
-                ->lockForUpdate()
-                ->get()
-                ->keyBy('id');
+        try {
+            // we add a transaction to safely do the actions
+            $order = DB::transaction(function () use ($request, $cart, $validatedAddress) {
+                // we lock products to avoid stock updates
+                $productIds = $cart->items->pluck('id');
+                $products = Product::whereIn('id', $productIds)
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
+                // we need to calculate total based on locked products
+                $total = 0.00;
+                // validate that item is 'still' available in stock
+                foreach ($cart->items as $item) {
+                    $cartQuantity = $item->pivot->quantity;
+                    $product = $products->get($item->id);
+                    if ($product) {
+                        $total += $product->price * $cartQuantity;
 
-            // validate that item is 'still' available in stock
-            foreach ($cart->items as $item) {
-                $cartQuantity = $item->pivot->quantity;
-                $product = $products->get($item->id);
-
-                if ($product->quantity < $cartQuantity) {
-                    return response()->json([
-                        'message' => "Sorry, {$product->name} is out of stock!",
-                        'available_stock' => $product->quantity,
-                        'in_cart' => $cartQuantity
-                    ], 422);
+                        if ($product->quantity < $cartQuantity) {
+                            abort(response()->json([
+                                'message' => "Sorry, {$product->name} is out of stock!",
+                                'available_stock' => $product->quantity,
+                                'in_cart' => $cartQuantity
+                            ], 422));
+                        }
+                    }
                 }
-            }
 
-            // create the order for the user, and calculate the total
-            $order = Order::create([
-                'user_id' => $request->user()->id,
-                'address_snapshot' => $validatedAddress,
-                'total' => $cart->total,
-                'status' => "pending"
-            ]);
+                // create the order for the user, and calculate the total
+                $order = Order::create([
+                    'user_id' => $request->user()->id,
+                    'address_snapshot' => $validatedAddress,
+                    'total' => $total,
+                    'status' => "pending"
+                ]);
 
-            // attach the order items from the cart items
-            $pivotTableData = [];
-            foreach ($cart->items as $item) {
-                $pivotTableData[$item->id] = [
-                    'item_name' => $item->name,
-                    'item_price' => $item->price,
-                    'quantity' => $item->pivot->quantity,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
+                // attach the order items from the cart items
+                $pivotTableData = [];
+                foreach ($cart->items as $item) {
+                    $pivotTableData[$item->id] = [
+                        'item_name' => $item->name,
+                        'item_price' => $item->price,
+                        'quantity' => $item->pivot->quantity,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
 
-                // take the quantity from the stock
-                $products->get($item->id)
-                    ->decrement('quantity', $item->pivot->quantity);
-            }
-            $order->items()->attach($pivotTableData);
+                    // take the quantity from the stock
+                    $products->get($item->id)
+                        ->decrement('quantity', $item->pivot->quantity);
+                }
+                $order->items()->attach($pivotTableData);
 
-            // empty the cart
-            $cart->items()->detach();
+                // empty the cart
+                $cart->items()->detach();
 
-            return $order;
-        });
+                return $order;
+            });
+        } catch (HttpResponseException $e) {
+            return $e->getResponse();
+        }
 
         return response()->json([
             'message' => 'ordered successfully. order is now pending.',
@@ -143,8 +152,10 @@ class OrderController extends Controller
                 ->keyBy('id');
 
             foreach ($order->items as $item) {
-                $products->get($item->id)
-                    ->increment('quantity', $item->pivot->quantity);
+                $product = $products->get($item->id);
+                if ($product) {
+                    $product->increment('quantity', $item->pivot->quantity);
+                }
             }
 
             $order->update(['status' => 'cancelled']);
