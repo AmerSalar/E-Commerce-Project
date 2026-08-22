@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
+    /**
+     * Get all current user's orders
+     */
     public function getAll(Request $request)
     {
         $perPage = $request->query('perPage', 4);
@@ -26,6 +29,9 @@ class OrderController extends Controller
 
         return new OrderCollection($orders);
     }
+    /**
+     * Get one of current user's orders
+     */
     public function getOne(Order $order)
     {
         if (Gate::denies('my-order', $order)) {
@@ -36,6 +42,9 @@ class OrderController extends Controller
 
         return new OrderResource($order->load('items'));
     }
+    /**
+     * Get all pending current user's orders
+     */
     public function getPendingOrders(Request $request)
     {
         $perPage = $request->query('perPage', 4);
@@ -49,6 +58,9 @@ class OrderController extends Controller
         return new OrderCollection($orders);
     }
 
+    /**
+     * Order now
+     */
     public function orderNow(AddressSnapshotRequest $request)
     {
         $validatedAddress = $request->validated();
@@ -130,6 +142,9 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Cancel a pending order
+     */
     public function cancelOrder(Request $request, Order $order)
     {
         if (Gate::denies('my-order', $order)) {
@@ -166,6 +181,9 @@ class OrderController extends Controller
         ], 200);
     }
 
+    /**
+     * Check order as delivered
+     */
     public function deliverOrder(Order $order)
     {
         if (Gate::denies('deliver-order')) {

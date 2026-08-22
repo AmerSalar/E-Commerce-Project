@@ -34,10 +34,18 @@ class LoginUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * @var string
+             * @example "ameer@gmail.com"
+             */
             'email' => [
                 'required',
                 'email',
             ],
+            /**
+             * @var string
+             * @example "//amer12"
+             */
             'password' => [
                 'required',
                 'string'

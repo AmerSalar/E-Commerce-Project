@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
+    /**
+     * get all categories
+     */
     public function getAll(Request $request)
     {
         $include = $request->query('include');
@@ -24,6 +27,9 @@ class CategoryController extends Controller
         return new CategoryCollection($categories);
     }
 
+    /**
+     * get one category
+     */
     public function getOne(Request $request, Category $category)
     {
         $include = $request->query('include');
@@ -33,6 +39,9 @@ class CategoryController extends Controller
         return new CategoryResource($category);
     }
 
+    /**
+     * store a new category
+     */
     public function store(SaveCategoryRequest $request)
     {
         if (Gate::denies('manage')) {
@@ -51,6 +60,9 @@ class CategoryController extends Controller
         ], 201);
     }
 
+    /**
+     * update a category
+     */
     public function update(SaveCategoryRequest $request, Category $category)
     {
         if (Gate::denies('manage')) {
@@ -68,6 +80,9 @@ class CategoryController extends Controller
         ], 200);
     }
 
+    /**
+     * destroy a category
+     */
     public function destroy(Category $category)
     {
         if (Gate::denies('manage')) {

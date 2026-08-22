@@ -17,6 +17,9 @@ use Intervention\Image\ImageManager;
 
 class ProductController extends Controller
 {
+    /**
+     * get all products
+     */
     public function getProducts(Request $request)
     {
         $include = $request->query('include');
@@ -28,6 +31,9 @@ class ProductController extends Controller
 
         return new ProductCollection($products);
     }
+    /**
+     * get one product
+     */
     public function getSingleProduct(Request $request, Product $product)
     {
         $include = $request->query('include');
@@ -36,6 +42,9 @@ class ProductController extends Controller
         }
         return new ProductResource($product);
     }
+    /**
+     * store a new product
+     */
     public function storeProduct(SaveProductRequest $request)
     {
         if (Gate::denies('manage')) {
@@ -87,6 +96,9 @@ class ProductController extends Controller
             'product' => new ProductResource($product->load('categories'))
         ], 201);
     }
+    /**
+     * update a product
+     */
     public function updateProduct(SaveProductRequest $request, Product $product)
     {
         if (Gate::denies('manage')) {
@@ -144,6 +156,9 @@ class ProductController extends Controller
         ], 200);
     }
 
+    /**
+     * destroy a product
+     */
     public function destroyProduct(Product $product)
     {
         if (Gate::denies('manage')) {

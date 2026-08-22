@@ -12,7 +12,7 @@ use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 class RefreshController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Refresh JWT token
      */
     public function __invoke(Request $request)
     {

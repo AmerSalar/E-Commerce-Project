@@ -14,11 +14,17 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    /**
+     * get current user's cart
+     */
     public function getCart(Request $request)
     {
         $cart = $request->user()->cart()->firstOrCreate()->load('items');
         return new CartResource($cart);
     }
+    /**
+     * push item into user's cart
+     */
     public function push(Request $request, Product $product)
     {
         $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:50']]);
@@ -66,6 +72,9 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * pull item from user's cart
+     */
     public function pull(Request $request, Product $product)
     {
         $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:50']]);
@@ -115,6 +124,9 @@ class CartController extends Controller
         ]);
     }
 
+    /**
+     * abandon/reset current user's cart
+     */
     public function abandon(Request $request)
     {
         $cart = $request->user()->cart()->firstOrCreate();

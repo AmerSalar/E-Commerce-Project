@@ -13,8 +13,16 @@ use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
+    /**
+     * get all users
+     */
     public function getAll(Request $request)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'You are not authorized!'
+            ], 403);
+        }
         $perPage = $request->query('perPage', 10);
         $include = $request->query('include');
         if ($include === "addresses") {
@@ -25,12 +33,23 @@ class UserController extends Controller
         return new UserCollection($users);
     }
 
+    /**
+     * get one user
+     */
     public function getOne(User $user)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'You are not authorized!'
+            ], 403);
+        }
         $user->load(['roles', 'addresses']);
         return new UserResource($user);
     }
 
+    /**
+     * update name of user
+     */
     public function updateName(UpdateNameRequest $request, User $user)
     {
         if (Gate::denies('updateName', $user)) {
@@ -47,6 +66,7 @@ class UserController extends Controller
             'user' => new UserResource($user)
         ], 200);
     }
+
     public function assignRole(User $user, int $role_id)
     {
         if (Gate::denies('updateRole', $user)) {
@@ -76,6 +96,9 @@ class UserController extends Controller
             'user' => new UserResource($user->load('roles'))
         ], 200);
     }
+    /**
+     * revoke a role from user
+     */
     public function revokeRole(User $user, int $role_id)
     {
         if (Gate::denies('updateRole', $user)) {
@@ -98,6 +121,9 @@ class UserController extends Controller
         ], 200);
     }
 
+    /**
+     * destroy a user
+     */
     public function destroy(User $user)
     {
         if (Gate::denies('deleteUser', $user)) {
