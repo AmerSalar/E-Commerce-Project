@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Address\AddressSnapshotRequest;
+use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -11,6 +12,16 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function getPendingOrders(Request $request)
+    {
+        $perPage = $request->query('perPage', 4);
+        $orders = $request->user()->orders()
+            ->where('status', 'pending')->with('items')->paginate($perPage);
+
+        return response()->json([
+            'orders' => OrderResource::collection($orders)
+        ]);
+    }
     public function orderNow(AddressSnapshotRequest $request)
     {
         $validatedAddress = $request->validated();
@@ -79,7 +90,7 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'ordered successfully. order is now pending.',
-            'order' => $order
+            'order' => $order->load('items')
         ]);
     }
 }
