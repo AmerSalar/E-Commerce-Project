@@ -10,6 +10,10 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ProductController extends Controller
 {
@@ -42,17 +46,41 @@ class ProductController extends Controller
 
         $validated = $request->validated();
 
-        // transaction means do all, if one of them fails, everyone fail too
+        $picture = $request->file('picture');
+        $generatedFileName = null;
+        if ($picture) {
+            $generatedFileName = 'products/' . Str::uuid() . '.webp';
 
-        $product = DB::transaction(function () use ($validated) {
-            $product = Product::create($validated);
+            $imgManager = new ImageManager(new Driver());
+            $encodedImage = $imgManager->read($picture)
+                ->scale(width: 512)
+                ->toWebp(quality: 80);
+            Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
 
-            if (!empty($validated['category_ids'])) {
-                $product->categories()->attach($validated['category_ids']);
+            $validated['picture_url'] = $generatedFileName;
+            unset($validated['picture']);
+        }
+
+        try {
+            // transaction means do all, if one of them fails, everyone fail too
+            $product = DB::transaction(function () use ($validated) {
+
+                $product = Product::create($validated);
+
+                if (!empty($validated['category_ids'])) {
+                    $product->categories()->attach($validated['category_ids']);
+                }
+
+                return $product;
+            });
+        } catch (\Throwable $e) {
+            if ($generatedFileName) {
+                Storage::disk('public')->delete($generatedFileName);
             }
-
-            return $product;
-        });
+            return response()->json([
+                'message' => 'Failed to store product!',
+            ], 422);
+        }
 
         return response()->json([
             'message' => 'product created successfully.',
@@ -63,9 +91,10 @@ class ProductController extends Controller
     {
         $validated = $request->validated();
 
-        $product->update($validated);
-
         DB::transaction(function () use ($product, $request, $validated) {
+
+            // delete the picture in storage then update
+
             $product->update($validated);
 
             if ($request->has('category_ids')) {
@@ -83,7 +112,13 @@ class ProductController extends Controller
 
     public function destroyProduct(Product $product)
     {
-        $product->delete();
+        DB::transaction(function () use ($product) {
+
+            // delete the picture in storage
+
+            $product->delete();
+        });
+
 
         return response()->json([
             'message' => 'product deleted successfully.'

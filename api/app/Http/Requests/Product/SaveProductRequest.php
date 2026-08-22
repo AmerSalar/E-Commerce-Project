@@ -28,6 +28,13 @@ class SaveProductRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:1024'],
             'price' => ['required', 'numeric', 'min:0', 'decimal:0,2'],
             'quantity' => ['required', 'integer', 'between:0,50'],
+            'picture' => [
+                'nullable',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+                'dimensions:min_width=256,min_height=256'
+            ],
             'category_ids' => ['required', 'array', 'min:1'], // check array
             'category_ids.*' => ['integer', 'distinct', 'exists:categories,id'] // check elements of array
         ];
