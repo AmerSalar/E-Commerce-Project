@@ -8,6 +8,7 @@ use App\Http\Resources\Category\CategoryCollection;
 use App\Http\Resources\Category\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -34,6 +35,12 @@ class CategoryController extends Controller
 
     public function store(SaveCategoryRequest $request)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to create a category!',
+            ], 403);
+        }
+
         $validated = $request->validated();
 
         $category = Category::create($validated);
@@ -46,6 +53,11 @@ class CategoryController extends Controller
 
     public function update(SaveCategoryRequest $request, Category $category)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to update this category!',
+            ], 403);
+        }
         $validated = $request->validated();
 
         $category->update($validated);
@@ -58,6 +70,11 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to delete this category!',
+            ], 403);
+        }
         $category->delete();
 
         return response()->json([
