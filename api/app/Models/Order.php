@@ -23,7 +23,9 @@ class Order extends Model
     }
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'order_items');
+        return $this->belongsToMany(Product::class, 'order_items')
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 
     protected $casts = [

@@ -96,5 +96,7 @@ Route::middleware('auth:api')->group(function () {
         ->group(function () {
             Route::get('/', [OrderController::class, 'getPendingOrders']);
             Route::post('/order-now', [OrderController::class, 'orderNow']);
+            Route::delete('/cancel/{order}', [OrderController::class, 'cancelOrder'])
+                ->missing([OrderController::class, 'notFound']);
         });
 });
