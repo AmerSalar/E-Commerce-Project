@@ -18,7 +18,8 @@ class OrderResource extends JsonResource
             'order_id' => $this->id,
             'user_id' => $this->user_id,
             'total_payment' => $this->total,
-            'address_snapshot' => $this->address_snapshot
+            'address_snapshot' => $this->address_snapshot,
+            'items' => OrderItemResource::collection($this->items)
         ];
     }
 }

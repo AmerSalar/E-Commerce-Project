@@ -94,6 +94,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('orders')
         ->name('orders.')
         ->group(function () {
+            Route::get('/', [OrderController::class, 'getPendingOrders']);
             Route::post('/order-now', [OrderController::class, 'orderNow']);
         });
 });
