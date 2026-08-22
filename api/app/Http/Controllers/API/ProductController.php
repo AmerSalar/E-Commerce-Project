@@ -89,20 +89,54 @@ class ProductController extends Controller
     }
     public function updateProduct(SaveProductRequest $request, Product $product)
     {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to update this product!',
+            ], 403);
+        }
+
         $validated = $request->validated();
 
-        DB::transaction(function () use ($product, $request, $validated) {
+        $picture = $request->file('picture');
+        $oldPictureUrl = $product->picture_url;
+        $generatedFileName = null;
 
-            // delete the picture in storage then update
+        if ($picture) {
+            $generatedFileName = 'products/' . Str::uuid() . '.webp';
 
-            $product->update($validated);
+            $imgManager = new ImageManager(new Driver());
+            $encodedImage = $imgManager->read($picture)
+                ->scale(width: 512)
+                ->toWebp(quality: 80);
 
-            if ($request->has('category_ids')) {
-                $product->categories()->sync(
-                    $validated['category_ids'] ?? []
-                );
+            Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
+            $validated['picture_url'] = $generatedFileName;
+            unset($validated['picture']);
+        }
+
+        try {
+            DB::transaction(function () use ($product, $request, $validated) {
+
+                $product->update($validated);
+
+                if ($request->has('category_ids')) {
+                    $product->categories()->sync(
+                        $validated['category_ids'] ?? []
+                    );
+                }
+            });
+        } catch (\Throwable $th) {
+            if ($generatedFileName) {
+                Storage::disk('public')->delete($generatedFileName);
             }
-        });
+            return response()->json([
+                'message' => 'failed to update product!',
+            ], 422);
+        }
+
+        if ($generatedFileName && $oldPictureUrl) {
+            Storage::disk('public')->delete($oldPictureUrl);
+        }
 
         return response()->json([
             'message' => 'product updated successfully.',
@@ -112,13 +146,22 @@ class ProductController extends Controller
 
     public function destroyProduct(Product $product)
     {
-        DB::transaction(function () use ($product) {
+        if (Gate::denies('manage')) {
+            return response()->json([
+                'message' => 'you are not authorized to delete this product!',
+            ], 403);
+        }
 
-            // delete the picture in storage
+        $pictureUrl = $product->picture_url;
 
-            $product->delete();
-        });
+        $product->delete();
 
+        // we delete file after database clean-up, in case the query failed
+        // then we don't want to delete picture before it.
+
+        if ($pictureUrl) {
+            Storage::disk('public')->delete($pictureUrl);
+        }
 
         return response()->json([
             'message' => 'product deleted successfully.'
