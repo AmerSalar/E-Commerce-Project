@@ -16,6 +16,10 @@ class UserPolicy
 
     public function updateName(User $authUser, User $user)
     {
+        // no updating name for owner, only he can do it for himself
+        if ($user->hasRole('super_admin')) {
+            return $authUser->id === $user->id;
+        }
         return $authUser->hasRole(['admin', 'super_admin']) ||
             $authUser->id === $user->id;
     }

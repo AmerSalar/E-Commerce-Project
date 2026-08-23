@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RefreshController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 // public routes VVVVVVVVVVVVVVVVVVVVVVVVVV
@@ -66,11 +67,13 @@ Route::middleware('auth:api')->group(function () {
             Route::post('/{user}',  'updateName')
                 ->missing([UserController::class, 'notFound']);
 
-
-            // FIX THESE LATER (ERROR HANDLING)
-            Route::post('/{user}/roles/{role}',  'assignRole')
+            Route::post('/{user}/roles/{role_id}',  'assignRole')
+                ->whereNumber('user')
+                ->whereNumber('role_id')
                 ->missing([UserController::class, 'notFound']);
-            Route::delete('/{user}/roles/{role}',  'revokeRole')
+            Route::delete('/{user}/roles/{role_id}',  'revokeRole')
+                ->whereNumber('user')
+                ->whereNumber('role_id')
                 ->missing([UserController::class, 'notFound']);
 
             Route::delete('/{user}',  'destroy')
