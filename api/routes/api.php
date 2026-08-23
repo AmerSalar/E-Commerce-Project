@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\{
+    AddressController,
     CartController,
     CategoryController,
     OrderController,
@@ -17,7 +18,11 @@ use App\Http\Controllers\Auth\{
 };
 use Illuminate\Support\Facades\Route;
 
-// public routes VVVVVVVVVVVVVVVVVVVVVVVVVV
+/**
+ *
+ * PUBLIC ROUTES NO JWT NEED
+ *
+ */
 Route::post('/register', RegisterController::class)->name('register')
     ->middleware('throttle:10,1');
 Route::post('/login', LoginController::class)->name('login')
@@ -25,6 +30,11 @@ Route::post('/login', LoginController::class)->name('login')
 Route::post('/refresh', RefreshController::class)->name('refresh')
     ->middleware('throttle:5,1');
 
+/**
+ *
+ * RESET PASSWORD
+ *
+ */
 Route::post('/forgot-password', [ResetPasswordController::class, 'forgot'])
     ->name('forgot-password')
     ->middleware('throttle:2,1');
@@ -34,7 +44,11 @@ Route::post('/verify-code', [ResetPasswordController::class, 'verify'])
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('reset-password')
     ->middleware('throttle:2,1');
-
+/**
+ *
+ * PUBLIC PRODUCTS
+ *
+ */
 Route::prefix('products')
     ->name('products.')
     ->controller(ProductController::class)
@@ -44,6 +58,11 @@ Route::prefix('products')
         Route::get('/{product}', 'getSingleProduct')
             ->missing([ProductController::class, 'productNotFound']);
     });
+/**
+ *
+ * PUBLIC CATEGORIES
+ *
+ */
 Route::prefix('categories')
     ->name('categories.')
     ->controller(CategoryController::class)
@@ -55,12 +74,21 @@ Route::prefix('categories')
             ->name('getOne');
     });
 
-// private routes VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+/**
+ *
+ * AUTHENTICATED ROUTES (PRIVATE) NEED JWT
+ *
+ */
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     Route::post('/change-password', ChangePasswordController::class)
         ->name('change-password');
 
+    /**
+     *
+     * USERS
+     *
+     */
     Route::prefix('users')
         ->name('users.')
         ->controller(UserController::class)
@@ -83,6 +111,29 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{user}',  'destroy')
                 ->missing([UserController::class, 'notFound']);
         });
+    /**
+     *
+     * ADDRESSES
+     *
+     */
+    Route::prefix('addresses')
+        ->name('addresses.')
+        ->controller(AddressController::class)
+        ->group(function () {
+            Route::get('/', 'getAll');
+            Route::get('/{address}', 'getOne')
+                ->missing([AddressController::class, 'notFound']);
+            Route::post('/', 'store');
+            Route::post('/{address}', 'update')
+                ->missing([AddressController::class, 'notFound']);
+            Route::delete('/{address}', 'destroy')
+                ->missing([AddressController::class, 'notFound']);
+        });
+    /**
+     *
+     * PRODUCTS
+     *
+     */
     Route::prefix('products')
         ->name('products.')
         ->controller(ProductController::class)
@@ -94,6 +145,11 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/{product}', 'destroyProduct')
                 ->missing([ProductController::class, 'productNotFound']);
         });
+    /**
+     *
+     * CATEGORIES
+     *
+     */
     Route::prefix('categories')
         ->name('categories.')
         ->controller(CategoryController::class)
@@ -107,6 +163,11 @@ Route::middleware('auth:api')->group(function () {
                 ->missing([CategoryController::class, 'notFound'])
                 ->name('destroy');
         });
+    /**
+     *
+     * CARTS
+     *
+     */
     Route::prefix('carts')
         ->name('carts.')
         ->group(function () {
@@ -117,6 +178,12 @@ Route::middleware('auth:api')->group(function () {
             Route::delete('/my-cart/{product}', [CartController::class, 'pull'])
                 ->missing([CartController::class, 'notFound'])->name('pull-item');
         });
+
+    /**
+     *
+     * ORDERS
+     *
+     */
     Route::prefix('orders')
         ->name('orders.')
         ->group(function () {
