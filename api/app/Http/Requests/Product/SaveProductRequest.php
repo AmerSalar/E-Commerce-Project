@@ -33,7 +33,7 @@ class SaveProductRequest extends FormRequest
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048',
-                'dimensions:min_width=256,min_height=256'
+                'dimensions:min_width=256,min_height=256,max_width=4096,max_height=4096'
             ],
             'category_ids' => ['required', 'array', 'min:1'], // check array
             'category_ids.*' => ['integer', 'distinct', 'exists:categories,id'] // check elements of array
