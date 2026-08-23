@@ -1,17 +1,20 @@
 <?php
 
-use App\Http\Controllers\API\CartController;
-use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\API\OrderController;
-use App\Http\Controllers\API\ProductController;
-use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\Auth\ChangePasswordController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\RefreshController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Models\User;
+use App\Http\Controllers\API\{
+    CartController,
+    CategoryController,
+    OrderController,
+    ProductController,
+    UserController
+};
+use App\Http\Controllers\Auth\{
+    ChangePasswordController,
+    LoginController,
+    LogoutController,
+    RefreshController,
+    RegisterController,
+    ResetPasswordController
+};
 use Illuminate\Support\Facades\Route;
 
 // public routes VVVVVVVVVVVVVVVVVVVVVVVVVV
