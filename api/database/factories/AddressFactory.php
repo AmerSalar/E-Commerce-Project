@@ -20,6 +20,7 @@ class AddressFactory extends Factory
     {
         return [
             'user_id' => User::inRandomOrder()->first()->id,
+            'phone' => fake()->phoneNumber(),
             'city' => fake()->city(),
             'street' => fake()->streetName(),
             'building' => fake()->buildingNumber()

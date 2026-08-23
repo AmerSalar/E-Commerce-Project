@@ -15,10 +15,26 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            /**
+             * @example 1
+             */
             'id' => $this->id,
+            /**
+             * @example "Ameer Salar"
+             */
             'name' => $this->name,
+            /**
+             * @example "ameersalar@gmail.com"
+             */
             'email' => $this->email,
+            /**
+             * @var array<integer>
+             * @example [1,2,3]
+             */
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            /**
+             * @var AddressResource
+             */
             'addresses' => AddressResource::collection($this->whenLoaded('addresses')),
         ];
     }

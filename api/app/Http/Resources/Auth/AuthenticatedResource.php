@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Auth;
 
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
@@ -31,8 +32,7 @@ class AuthenticatedResource extends JsonResource
              */
             'token' => $this->token,
             /**
-             * @var array<string, string>
-             * @example {"name": "Ameer", "email": "ameer@gmail.com"}
+             * @var UserResource
              */
             'user' => $this->user
         ];

@@ -16,9 +16,18 @@ class CategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            /**
+             * @example 1
+             */
             'id' => $this->id,
+            /**
+             * @example "console"
+             */
             'name' => $this->name,
 
+            /**
+             * @var ProductResource
+             */
             'products' => ProductResource::collection($this->whenLoaded('products')),
         ];
     }

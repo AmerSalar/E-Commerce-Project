@@ -15,9 +15,27 @@ class AddressResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            /**
+             * @example 1
+             */
             'id' => $this->id,
+            /**
+             * @var string
+             * @example '07501234567'
+             */
+            'phone' => $this->phone,
+            /**
+             * @example "Slemani"
+             */
             'city' => $this->city,
+            /**
+             * @example "Mawlawi st."
+             */
             'street' => $this->street,
+            /**
+             * @var integer
+             * @example 18
+             */
             'building' => $this->building,
         ];
     }
