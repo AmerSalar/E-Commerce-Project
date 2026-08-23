@@ -24,6 +24,10 @@ class SaveCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * @var string
+             * @example "console"
+             */
             'name' => ['required', 'string', 'max:64'],
         ];
     }

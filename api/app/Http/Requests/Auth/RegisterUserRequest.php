@@ -34,16 +34,28 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * @var string
+             * @example "Ameer Salar"
+             */
             'name' => [
                 'required',
                 'string',
                 'max:64',
             ],
+            /**
+             * @var string
+             * @example "ameer@gmail.com"
+             */
             'email' => [
                 'required',
                 'email',
                 'unique:users,email'
             ],
+            /**
+             * @var string
+             * @example "//amer12"
+             */
             'password' => [
                 'required',
                 'confirmed',
@@ -52,10 +64,6 @@ class RegisterUserRequest extends FormRequest
                     ->numbers()
                     ->symbols()
             ]
-            // 'role_id' => [
-            //     'required',
-            //     Rule::exists('roles', 'id')
-            // ]
         ];
     }
 }

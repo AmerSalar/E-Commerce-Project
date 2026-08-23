@@ -23,9 +23,25 @@ class AddressSnapshotRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * @var string
+             * @example "07501234567"
+             */
             'phone' => ['required', 'string', 'max:64'],
+            /**
+             * @var string
+             * @example "Slemani"
+             */
             'city' => ['required', 'string', 'max:64'],
+            /**
+             * @var string
+             * @example "Salim st."
+             */
             'street' => ['required', 'string', 'max:64'],
+            /**
+             * @var string
+             * @example "37"
+             */
             'building' => ['required', 'integer', 'min:1'],
         ];
     }

@@ -32,7 +32,8 @@ Route::post('/verify-code', [ResetPasswordController::class, 'verify'])
     ->name('verify-code')
     ->middleware('throttle:10,5');
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
-    ->name('reset-password');
+    ->name('reset-password')
+    ->middleware('throttle:2,1');
 
 Route::prefix('products')
     ->name('products.')

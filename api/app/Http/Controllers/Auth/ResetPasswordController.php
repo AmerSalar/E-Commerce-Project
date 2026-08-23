@@ -125,6 +125,7 @@ class ResetPasswordController extends Controller
         if (
             !$record ||
             !$record->reset_token ||
+            now()->isAfter($record->expires_at) ||
             !Hash::check(
                 $request->input('token'),
                 $record->reset_token

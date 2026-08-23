@@ -23,6 +23,10 @@ class UpdateNameRequest extends FormRequest
     public function rules(): array
     {
         return [
+            /**
+             * @var string
+             * @example "Ahmed Ali"
+             */
             'name' => ['required', 'string', 'max:128'],
         ];
     }
