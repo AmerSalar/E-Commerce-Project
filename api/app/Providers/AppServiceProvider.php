@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Address;
 use App\Models\Order;
 use App\Models\User;
 use App\Policies\OrderPolicy;
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::define('manage', [UserPolicy::class, 'manage']);
         Gate::define('get', [UserPolicy::class, 'get']);
+        Gate::define('access-address', function (User $user, Address $address) {
+            return $user->id === $address->user_id
+                || $user->hasRole(['super_admin', 'admin', 'manager']);
+        });
         Gate::define('deliver-order', [OrderPolicy::class, 'deliver']);
         Gate::define('my-order', [OrderPolicy::class, 'getOne']);
     }
