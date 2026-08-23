@@ -65,17 +65,19 @@ class OrderController extends Controller
     {
         $validatedAddress = $request->validated();
 
-        // we first make sure cart has items
-        $cart = $request->user()->cart?->load('items');
-        if (!$cart || $cart->items->isEmpty()) {
-            return response()->json([
-                'message' => 'There is nothing to order, cart is empty!'
-            ], 422);
-        }
 
         try {
             // we add a transaction to safely do the actions
-            $order = DB::transaction(function () use ($request, $cart, $validatedAddress) {
+            $order = DB::transaction(function () use ($request, $validatedAddress) {
+
+                // we first make sure cart has items
+                $cart = $request->user()->cart?->load('items');
+                if (!$cart || $cart->items->isEmpty()) {
+                    abort(response()->json([
+                        'message' => 'There is nothing to order, cart is empty!'
+                    ], 422));
+                }
+
                 // we lock products to avoid stock updates
                 $productIds = $cart->items->pluck('id');
                 $products = Product::whereIn('id', $productIds)
@@ -83,23 +85,40 @@ class OrderController extends Controller
                     ->get()
                     ->keyBy('id');
 
+                // attach the order items from the cart items
+                $pivotTableData = [];
                 // we need to calculate total based on locked products
                 $total = 0.00;
                 // validate that item is 'still' available in stock
                 foreach ($cart->items as $item) {
                     $cartQuantity = $item->pivot->quantity;
                     $product = $products->get($item->id);
-                    if ($product) {
-                        $total += $product->price * $cartQuantity;
-
-                        if ($product->quantity < $cartQuantity) {
-                            abort(response()->json([
-                                'message' => "Sorry, {$product->name} is out of stock!",
-                                'available_stock' => $product->quantity,
-                                'in_cart' => $cartQuantity
-                            ], 422));
-                        }
+                    if (!$product) {
+                        abort(response()->json([
+                            'message' => "Sorry, {$item->name} just went out of stock!",
+                        ], 422));
                     }
+                    $total += $product->price * $cartQuantity;
+
+                    if ($product->quantity < $cartQuantity) {
+                        abort(response()->json([
+                            'message' => "Sorry, {$product->name} is out of stock!",
+                            'available_stock' => $product->quantity,
+                            'in_cart' => $cartQuantity
+                        ], 422));
+                    }
+
+
+                    $pivotTableData[$item->id] = [
+                        'item_name' => $item->name,
+                        'item_price' => $item->price,
+                        'quantity' => $item->pivot->quantity,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+
+                    // take the quantity from the stock
+                    $product->decrement('quantity', $item->pivot->quantity);
                 }
 
                 // create the order for the user, and calculate the total
@@ -110,21 +129,6 @@ class OrderController extends Controller
                     'status' => "pending"
                 ]);
 
-                // attach the order items from the cart items
-                $pivotTableData = [];
-                foreach ($cart->items as $item) {
-                    $pivotTableData[$item->id] = [
-                        'item_name' => $item->name,
-                        'item_price' => $item->price,
-                        'quantity' => $item->pivot->quantity,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-
-                    // take the quantity from the stock
-                    $products->get($item->id)
-                        ->decrement('quantity', $item->pivot->quantity);
-                }
                 $order->items()->attach($pivotTableData);
 
                 // empty the cart
