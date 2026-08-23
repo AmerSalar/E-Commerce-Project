@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helpers\HelperFunctions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\SaveProductRequest;
 use App\Http\Resources\Product\ProductCollection;
@@ -12,8 +13,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Drivers\Gd\Driver;
-use Intervention\Image\ImageManager;
 
 class ProductController extends Controller
 {
@@ -60,10 +59,7 @@ class ProductController extends Controller
         if ($picture) {
             $generatedFileName = 'products/' . Str::uuid() . '.webp';
 
-            $imgManager = new ImageManager(new Driver());
-            $encodedImage = $imgManager->read($picture)
-                ->scale(width: 512)
-                ->toWebp(quality: 80);
+            $encodedImage = HelperFunctions::compressImage($picture);
             Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
 
             $validated['picture_url'] = $generatedFileName;
@@ -75,10 +71,8 @@ class ProductController extends Controller
             $product = DB::transaction(function () use ($validated) {
 
                 $product = Product::create($validated);
-
-                if (!empty($validated['category_ids'])) {
-                    $product->categories()->attach($validated['category_ids']);
-                }
+                // category_ids is a required field
+                $product->categories()->attach($validated['category_ids']);
 
                 return $product;
             });
@@ -116,11 +110,7 @@ class ProductController extends Controller
         if ($picture) {
             $generatedFileName = 'products/' . Str::uuid() . '.webp';
 
-            $imgManager = new ImageManager(new Driver());
-            $encodedImage = $imgManager->read($picture)
-                ->scale(width: 512)
-                ->toWebp(quality: 80);
-
+            $encodedImage = HelperFunctions::compressImage($picture);
             Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
             $validated['picture_url'] = $generatedFileName;
             unset($validated['picture']);
@@ -130,12 +120,9 @@ class ProductController extends Controller
             DB::transaction(function () use ($product, $request, $validated) {
 
                 $product->update($validated);
-
-                if ($request->has('category_ids')) {
-                    $product->categories()->sync(
-                        $validated['category_ids'] ?? []
-                    );
-                }
+                $product->categories()->sync(
+                    $validated['category_ids'] ?? []
+                );
             });
         } catch (\Throwable $th) {
             if ($generatedFileName) {
