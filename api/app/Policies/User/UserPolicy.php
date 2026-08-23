@@ -53,4 +53,9 @@ class UserPolicy
     {
         return $authUser->hasRole(['manager', 'super_admin', 'admin']);
     }
+    public function get(User $authUser, User $user)
+    {
+        return $authUser->hasRole(['super_admin', 'admin'])
+            || $authUser->id === $user->id;
+    }
 }

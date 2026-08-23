@@ -38,7 +38,7 @@ class UserController extends Controller
      */
     public function getOne(User $user)
     {
-        if (Gate::denies('manage')) {
+        if (Gate::denies('get', $user)) {
             return response()->json([
                 'message' => 'You are not authorized!'
             ], 403);

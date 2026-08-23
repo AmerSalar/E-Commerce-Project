@@ -50,11 +50,6 @@ Route::prefix('categories')
             ->name('getOne');
     });
 
-
-
-
-
-
 // private routes VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');

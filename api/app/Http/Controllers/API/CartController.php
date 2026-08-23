@@ -33,6 +33,8 @@ class CartController extends Controller
 
         try {
             $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
+
+                // Lock will be on product record until transaction ends.
                 $lockedProduct = Product::where('id', $product->id)
                     ->lockForUpdate()
                     ->first();
@@ -52,6 +54,8 @@ class CartController extends Controller
                         'currently_in_cart' => $cartItemQuantity
                     ], 422));
                 }
+
+                $product->save();
 
                 // syncWithoutDetaching is like update or insert,
                 // either update existing value, or add new one
@@ -84,10 +88,14 @@ class CartController extends Controller
         try {
             $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
 
+                $lockedProduct = Product::where('id', $product->id)
+                    ->lockForUpdate()
+                    ->first();
+
                 $cart = $request->user()->cart()->firstOrCreate();
 
                 $cartItemQuantity = $cart->items()
-                    ->where('cart_items.product_id', $product->id)
+                    ->where('cart_items.product_id', $lockedProduct->id)
                     ->value('cart_items.quantity') ?? 0;
                 if ($cartItemQuantity === 0) {
                     abort(response()->json([
@@ -104,10 +112,10 @@ class CartController extends Controller
                     ], 422));
                 }
                 if ($calculatedQuantity === 0) {
-                    $cart->items()->detach($product->id);
+                    $cart->items()->detach($lockedProduct->id);
                 } else {
                     $cart->items()->syncWithoutDetaching([
-                        $product->id => ['quantity' => $calculatedQuantity]
+                        $lockedProduct->id => ['quantity' => $calculatedQuantity]
                     ]);
                 }
 
