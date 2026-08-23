@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
@@ -19,8 +20,12 @@ class RegisterController extends Controller
             ['name', 'email', 'password']
         );
 
-        $user = User::create($attributes);
+        $user = DB::transaction(function () use ($attributes) {
+            $user = User::create($attributes);
+            $user->cart()->create();
 
+            return $user;
+        });
         $token = Auth::login($user);
 
         $data = new AuthData(
