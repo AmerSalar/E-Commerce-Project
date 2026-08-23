@@ -4,12 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Cart\CartResource;
-use App\Models\Cart;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
@@ -19,8 +16,13 @@ class CartController extends Controller
      */
     public function getCart(Request $request)
     {
-        $cart = $request->user()->cart()->firstOrCreate()->load('items');
-        return new CartResource($cart);
+        $cart = $request->user()->cart;
+        if (!$cart) {
+            return response()->json([
+                'message' => "cart was not found for this user!"
+            ], 404);
+        }
+        return new CartResource($cart->load('items'));
     }
     /**
      * push item into user's cart
@@ -39,7 +41,12 @@ class CartController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                $cart = $request->user()->cart()->firstOrCreate();
+                $cart = $request->user()->cart;
+                if (!$cart) {
+                    abort(response()->json([
+                        'message' => "cart was not found for this user!"
+                    ], 404));
+                }
 
                 // get already existing quantity if not then 0
                 $cartItemQuantity = $cart->items()
@@ -92,7 +99,12 @@ class CartController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                $cart = $request->user()->cart()->firstOrCreate();
+                $cart = $request->user()->cart;
+                if (!$cart) {
+                    abort(response()->json([
+                        'message' => "cart was not found for this user!"
+                    ], 404));
+                }
 
                 $cartItemQuantity = $cart->items()
                     ->where('cart_items.product_id', $lockedProduct->id)
@@ -137,7 +149,12 @@ class CartController extends Controller
      */
     public function abandon(Request $request)
     {
-        $cart = $request->user()->cart()->firstOrCreate();
+        $cart = $request->user()->cart;
+        if (!$cart) {
+            return response()->json([
+                'message' => "cart was not found for this user!"
+            ], 404);
+        }
         $cart->items()->detach();
 
         return response()->json([
