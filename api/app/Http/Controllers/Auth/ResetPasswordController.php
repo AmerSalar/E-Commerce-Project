@@ -84,11 +84,13 @@ class ResetPasswordController extends Controller
         }
 
         $token = Str::random(64);
+        $expires_at = now()->addMinutes(5);
 
         DB::table($table)
             ->where('email', $email)
             ->update([
-                'reset_token' => Hash::make($token)
+                'reset_token' => Hash::make($token),
+                'expires_at' => $expires_at
             ]);
 
         return response()->json([
