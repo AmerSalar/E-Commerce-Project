@@ -88,7 +88,7 @@ class CartController extends Controller
     {
         $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:50']]);
         // user desired quantity from form request or by default = 1
-        $userQuantity = $request->integer('quantity', 1);
+        $userQuantity = $request->integer('quantity') ?: 1;
 
         try {
             $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
