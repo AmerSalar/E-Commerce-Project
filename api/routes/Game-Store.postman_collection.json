@@ -1,0 +1,1164 @@
+{
+  "info": {
+    "_postman_id": "c3cd002e-6d93-49c7-8019-c023d86d08c5",
+    "name": "Game-Store",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57074736"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Reset password",
+          "item": [
+            {
+              "name": "Forgot password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "email",
+                      "value": "ameer@gmail.com",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/forgot-password",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "forgot-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Verify code",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "email",
+                      "value": "ameer@gmail.com",
+                      "type": "text"
+                    },
+                    {
+                      "key": "code",
+                      "value": "322302",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/verify-code",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "verify-code"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reset password",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "email",
+                      "value": "ameer@gmail.com",
+                      "type": "text"
+                    },
+                    {
+                      "key": "token",
+                      "value": "RozECLHkpZOqdJSx6Sv7rfCrZt2s0cdv0MR8LRFmOAKOaGh66mG308g9hgfgm31M",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "//amer12",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password_confirmation",
+                      "value": "//amer12",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/reset-password",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "reset-password"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Register",
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "name",
+                  "value": "Ameer Salar",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "ameersalar@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "amer12..",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "amer12..",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://api.test/api/register",
+              "protocol": "http",
+              "host": [
+                "api",
+                "test"
+              ],
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "email",
+                  "value": "ameer@gmail.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "//amer12",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://api.test/api/login",
+              "protocol": "http",
+              "host": [
+                "api",
+                "test"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLnRlc3QvYXBpL2xvZ2luIiwiaWF0IjoxNzg3NDY3NDg5LCJleHAiOjE3ODc0NzEwODksIm5iZiI6MTc4NzQ2NzQ4OSwianRpIjoiblRkRERxeUM1U2tJZmRkdyIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3IiwibmFtZSI6IkFtZWVyIFNhbGFyIiwiZW1haWwiOiJhbWVlckBnbWFpbC5jb20ifQ.2NZkN0xpOhyuu8thsnAZxdYiIPdM-arpRL-FcKERLHQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://api.test/api/logout",
+              "protocol": "http",
+              "host": [
+                "api",
+                "test"
+              ],
+              "path": [
+                "api",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change password",
+          "request": {
+            "auth": {
+              "type": "bearer"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "old_password",
+                  "value": "//amer12",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "..amer12",
+                  "type": "text"
+                },
+                {
+                  "key": "password_confirmation",
+                  "value": "..amer12",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://api.test/api/change-password",
+              "protocol": "http",
+              "host": [
+                "api",
+                "test"
+              ],
+              "path": [
+                "api",
+                "change-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "bearer"
+      }
+    },
+    {
+      "name": "API",
+      "item": [
+        {
+          "name": "User",
+          "item": [
+            {
+              "name": "Get all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/users",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get one",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://api.test/api/users/23",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "23"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update name",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "Ahmed",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/users/22",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "22"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Assign role",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "if (Gate::denies('updateRole', $user)) {\n            return response()->json([\n                'message' => 'You cannot assign roles to this user!'\n            ], 403);\n        };",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/users/2/roles/10",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "2",
+                    "roles",
+                    "10"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Assign role Copy",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "if (Gate::denies('updateRole', $user)) {\n            return response()->json([\n                'message' => 'You cannot assign roles to this user!'\n            ], 403);\n        };",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/users/22/roles",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "22",
+                    "roles"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Revoke role",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/users/10/roles/3",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "10",
+                    "roles",
+                    "3"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Destroy",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLnRlc3QvYXBpL2xvZ2luIiwiaWF0IjoxNzg3MjIzMzUwLCJleHAiOjE3ODcyMjY5NTAsIm5iZiI6MTc4NzIyMzM1MCwianRpIjoiSmFPREZRZXdIUVlzYW9mZSIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3IiwibmFtZSI6IkFtZWVyIFNhbGFyIiwiZW1haWwiOiJhbWVlckBnbWFpbC5jb20ifQ.rWHzSNjIQr561Y06gbl_-zOPp5uf7jiWL4Yv_g1yqzA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/users/22",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "users",
+                    "22"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ],
+          "auth": {
+            "type": "bearer",
+            "bearer": [
+              {
+                "key": "token",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLnRlc3QvYXBpL2xvZ2luIiwiaWF0IjoxNzg3NDcxNTY0LCJleHAiOjE3ODc0NzUxNjQsIm5iZiI6MTc4NzQ3MTU2NCwianRpIjoiNmVndXZUYkZDblRPYmdVYiIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3IiwibmFtZSI6IkFtZWVyIFNhbGFyIiwiZW1haWwiOiJhbWVlckBnbWFpbC5jb20ifQ.y2FOOrKsUlMfc16SnTkjREKGRpyYtAvEWq2IQckqlLQ",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Product",
+          "item": [
+            {
+              "name": "Get all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/products?include=categories",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "categories"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get one",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/products/10?include=categories",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "10"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "categories"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Store",
+              "protocolProfileBehavior": {
+                "disabledSystemHeaders": {}
+              },
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "GTA SA",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "4.99",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "not provided",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "30",
+                      "type": "text"
+                    },
+                    {
+                      "key": "picture",
+                      "type": "file",
+                      "src": [
+                        "/C:/Users/Amer/Pictures/wallpapers/Blue knight.png"
+                      ]
+                    },
+                    {
+                      "key": "category_ids[]",
+                      "value": "4",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/products",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "products"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "GTA V ",
+                      "type": "text"
+                    },
+                    {
+                      "key": "description",
+                      "value": "Grand Theft Auto V ",
+                      "type": "text"
+                    },
+                    {
+                      "key": "price",
+                      "value": "19.99",
+                      "type": "text"
+                    },
+                    {
+                      "key": "quantity",
+                      "value": "10",
+                      "type": "text"
+                    },
+                    {
+                      "key": "category_ids[]",
+                      "value": "1",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "key": "category_ids[]",
+                      "value": "3",
+                      "type": "text"
+                    },
+                    {
+                      "key": "picture",
+                      "type": "file",
+                      "src": [
+                        "/C:/Users/Amer/Pictures/wallpapers/hoodie guy.jpg"
+                      ]
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/products/2",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Destroy",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/products/13",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "products",
+                    "13"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Category",
+          "item": [
+            {
+              "name": "Get all",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/categories?include=products",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "categories"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "products"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get one",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "http://api.test/api/categories/10?include=products",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "categories",
+                    "10"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "products"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Store",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "expensive",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/categories",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "name",
+                      "value": "big",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/categories/100",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "categories",
+                    "100"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Destroy",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/categories/100",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "categories",
+                    "100"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Cart",
+          "item": [
+            {
+              "name": "Get my cart",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/carts/my-cart",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "carts",
+                    "my-cart"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Pull product",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"quantity\": 1\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://api.test/api/carts/my-cart/20",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "carts",
+                    "my-cart",
+                    "20"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Abandon cart",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/carts/my-cart",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "carts",
+                    "my-cart"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Push product",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "quantity",
+                      "value": "2",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://api.test/api/carts/my-cart/7",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "carts",
+                    "my-cart",
+                    "7"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Order",
+          "item": [
+            {
+              "name": "Get all orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/orders?page=1",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get one order",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/orders/24",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    "24"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get pending orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/orders/pending",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    "pending"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Order now",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"phone\": \"07501234567\",\r\n    \"city\": \"Slemani\",\r\n    \"street\": \"Salim st.\",\r\n    \"building\": \"10\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://api.test/api/orders/order-now",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    "order-now"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Deliver order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"phone\": \"07501234567\",\r\n    \"city\": \"Slemani\",\r\n    \"street\": \"Salim st.\",\r\n    \"building\": \"10\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "http://api.test/api/orders/deliver/20",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    "deliver",
+                    "20"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Cancel order",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "http://api.test/api/orders/cancel/28",
+                  "protocol": "http",
+                  "host": [
+                    "api",
+                    "test"
+                  ],
+                  "path": [
+                    "api",
+                    "orders",
+                    "cancel",
+                    "28"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLnRlc3QvYXBpL3JlZ2lzdGVyIiwiaWF0IjoxNzg3NDc0NTE3LCJleHAiOjE3ODc0NzgxMTcsIm5iZiI6MTc4NzQ3NDUxNywianRpIjoiUk5rMkdYZnFFZmNhR2V0MiIsInN1YiI6IjIyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsIm5hbWUiOiJBbWVlciBTYWxhciIsImVtYWlsIjoiYW1lZXJzYWxhckBnbWFpbC5jb20ifQ.tFQhXAw36qJeKi18UGsQCznMq41ImUa2zjEdQ6gM93M",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
