@@ -20,7 +20,6 @@ class AddressResource extends JsonResource
              */
             'id' => $this->id,
             /**
-             * @var string
              * @example '07501234567'
              */
             'phone' => $this->phone,
