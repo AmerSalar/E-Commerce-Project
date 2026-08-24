@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\HelperFunctions;
 use App\Http\Controllers\API\{
     AddressController,
     CartController,
@@ -55,8 +56,7 @@ Route::prefix('products')
     ->group(function () {
 
         Route::get('/', 'getProducts');
-        Route::get('/{product}', 'getSingleProduct')
-            ->missing([ProductController::class, 'productNotFound']);
+        Route::get('/{product}', 'getSingleProduct');
     });
 /**
  *
@@ -70,7 +70,6 @@ Route::prefix('categories')
 
         Route::get('/', 'getAll')->name('getAll');
         Route::get('/{category}', 'getOne')
-            ->missing([CategoryController::class, 'notFound'])
             ->name('getOne');
     });
 
@@ -83,7 +82,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     Route::post('/change-password', ChangePasswordController::class)
         ->name('change-password');
-
     /**
      *
      * USERS
@@ -94,22 +92,15 @@ Route::middleware('auth:api')->group(function () {
         ->controller(UserController::class)
         ->group(function () {
             Route::get('/', 'getAll');
-            Route::get('/{user}', 'getOne')
-                ->missing([UserController::class, 'notFound']);
-            Route::post('/{user}',  'updateName')
-                ->missing([UserController::class, 'notFound']);
-
+            Route::get('/{user}', 'getOne');
+            Route::post('/{user}',  'updateName');
             Route::post('/{user}/roles/{role_id}',  'assignRole')
                 ->whereNumber('user')
-                ->whereNumber('role_id')
-                ->missing([UserController::class, 'notFound']);
+                ->whereNumber('role_id');
             Route::delete('/{user}/roles/{role_id}',  'revokeRole')
                 ->whereNumber('user')
-                ->whereNumber('role_id')
-                ->missing([UserController::class, 'notFound']);
-
-            Route::delete('/{user}',  'destroy')
-                ->missing([UserController::class, 'notFound']);
+                ->whereNumber('role_id');
+            Route::delete('/{user}',  'destroy');
         });
     /**
      *
@@ -121,13 +112,10 @@ Route::middleware('auth:api')->group(function () {
         ->controller(AddressController::class)
         ->group(function () {
             Route::get('/', 'getAll');
-            Route::get('/{address}', 'getOne')
-                ->missing([AddressController::class, 'notFound']);
             Route::post('/', 'store');
-            Route::post('/{address}', 'update')
-                ->missing([AddressController::class, 'notFound']);
-            Route::delete('/{address}', 'destroy')
-                ->missing([AddressController::class, 'notFound']);
+            Route::get('/{address}', 'getOne');
+            Route::post('/{address}', 'update');
+            Route::delete('/{address}', 'destroy');
         });
     /**
      *
@@ -138,12 +126,9 @@ Route::middleware('auth:api')->group(function () {
         ->name('products.')
         ->controller(ProductController::class)
         ->group(function () {
-
             Route::post('/', 'storeProduct');
-            Route::post('/{product}',  'updateProduct')
-                ->missing([ProductController::class, 'productNotFound']);
-            Route::delete('/{product}', 'destroyProduct')
-                ->missing([ProductController::class, 'productNotFound']);
+            Route::post('/{product}',  'updateProduct');
+            Route::delete('/{product}', 'destroyProduct');
         });
     /**
      *
@@ -154,13 +139,10 @@ Route::middleware('auth:api')->group(function () {
         ->name('categories.')
         ->controller(CategoryController::class)
         ->group(function () {
-
             Route::post('/', 'store')->name('store');
             Route::post('/{category}',  'update')
-                ->missing([CategoryController::class, 'notFound'])
                 ->name('update');
             Route::delete('/{category}',  'destroy')
-                ->missing([CategoryController::class, 'notFound'])
                 ->name('destroy');
         });
     /**
@@ -173,10 +155,8 @@ Route::middleware('auth:api')->group(function () {
         ->group(function () {
             Route::get('/my-cart', [CartController::class, 'getCart'])->name('my-cart');
             Route::delete('/my-cart', [CartController::class, 'abandon'])->name('delete-cart');
-            Route::post('/my-cart/{product}', [CartController::class, 'push'])
-                ->missing([CartController::class, 'notFound'])->name('push-item');
-            Route::delete('/my-cart/{product}', [CartController::class, 'pull'])
-                ->missing([CartController::class, 'notFound'])->name('pull-item');
+            Route::post('/my-cart/{product}', [CartController::class, 'push']);
+            Route::delete('/my-cart/{product}', [CartController::class, 'pull']);
         });
 
     /**
@@ -190,11 +170,8 @@ Route::middleware('auth:api')->group(function () {
             Route::get('/', [OrderController::class, 'getAll']);
             Route::get('/pending', [OrderController::class, 'getPendingOrders']);
             Route::post('/order-now', [OrderController::class, 'orderNow']);
-            Route::post('/deliver/{order}', [OrderController::class, 'deliverOrder'])
-                ->missing([OrderController::class, 'notFound']);
-            Route::delete('/cancel/{order}', [OrderController::class, 'cancelOrder'])
-                ->missing([OrderController::class, 'notFound']);
-            Route::get('/{order}', [OrderController::class, 'getOne'])
-                ->missing([OrderController::class, 'notFound']);
+            Route::post('/deliver/{order}', [OrderController::class, 'deliverOrder']);
+            Route::delete('/cancel/{order}', [OrderController::class, 'cancelOrder']);
+            Route::get('/{order}', [OrderController::class, 'getOne']);
         });
 });
