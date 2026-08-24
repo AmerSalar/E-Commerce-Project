@@ -21,12 +21,9 @@ class ProductController extends Controller
      */
     public function getProducts(Request $request)
     {
-        $include = $request->query('include');
-        $perPage = $request->query('perPage', 10);
-
-        $products = $include === 'categories' ?
-            Product::with('categories')->paginate($perPage) :
-            Product::paginate($perPage);
+        $perPage = min($request->query('perPage', 10), 50);
+        $products = Product::withRelations($request->query('include'))
+            ->paginate($perPage);
 
         return new ProductCollection($products);
     }
