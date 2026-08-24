@@ -1,13 +1,14 @@
 <?php
 
+use App\Helpers\HelperFunctions;
 use App\Http\Resources\Auth\AuthResource;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,10 +24,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson())
                 return response()->json(new AuthResource((object)[
                     'message' => "You are not authenticated!"
                 ]), 401);
+        });
+
+        $exceptions->render(function (NotFoundHttpException $e, $request) {
+            if ($request->is("api/*")) {
+                $previous = $e->getPrevious();
+                $modelName = $previous instanceof ModelNotFoundException
+                    ? class_basename($previous->getModel())
+                    : 'Resource';
+
+                return HelperFunctions::modelNotFound($modelName);
+            }
         });
     })->create();
