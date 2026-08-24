@@ -30,7 +30,12 @@ class SaveProductRequest extends FormRequest
              * @var string
              * @example "GTA V"
              */
-            'name' => ['required', 'string', 'max:128'],
+            'name' => [
+                'required',
+                'string',
+                'max:128',
+                Rule::unique('products', 'name')->ignore($this->route('product'))
+            ],
             /**
              * @var string
              * @example "Grand Theft Auto 5"
