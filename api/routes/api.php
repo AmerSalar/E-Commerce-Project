@@ -1,16 +1,15 @@
 <?php
 
-use App\Helpers\HelperFunctions;
 use App\Http\Controllers\API\{
     AddressController,
     CartController,
     CategoryController,
     OrderController,
     ProductController,
-    UserController
+    UserController,
+    UserProfileController
 };
 use App\Http\Controllers\Auth\{
-    ChangePasswordController,
     LoginController,
     LogoutController,
     RefreshController,
@@ -45,6 +44,9 @@ Route::post('/verify-code', [ResetPasswordController::class, 'verify'])
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('reset-password')
     ->middleware('throttle:2,1');
+
+
+
 /**
  *
  * PUBLIC PRODUCTS
@@ -80,8 +82,19 @@ Route::prefix('categories')
  */
 Route::middleware('auth:api')->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
-    Route::post('/change-password', ChangePasswordController::class)
-        ->name('change-password');
+    /**
+     *
+     * My Profile (current user)
+     *
+     */
+    Route::prefix('me')
+        ->name("me.")
+        ->controller(UserProfileController::class)
+        ->group(function () {
+            Route::get('/', 'profile');
+            Route::post('/', 'update');
+            Route::post('/change-password', 'changePassword');
+        });
     /**
      *
      * USERS
