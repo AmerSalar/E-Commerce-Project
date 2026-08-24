@@ -21,8 +21,11 @@ class ProductController extends Controller
      */
     public function getProducts(Request $request)
     {
-        $perPage = min($request->query('perPage', 10), 50);
-        $products = Product::withRelations($request->query('include'))
+        $perPage = max(1, min((int) $request->query('perPage', 10), 50));
+        $products = Product::query()
+            ->withRelations($request->query('include'))
+            // this is ORDER BY id DESC
+            ->latest('id')
             ->paginate($perPage);
 
         return new ProductCollection($products);
