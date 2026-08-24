@@ -169,10 +169,4 @@ class ProductController extends Controller
             'message' => 'product deleted successfully.'
         ], 200);
     }
-    public static function productNotFound()
-    {
-        return response()->json([
-            'message' => 'Product not found!'
-        ], 404);
-    }
 }

@@ -209,10 +209,4 @@ class OrderController extends Controller
             'order' => new OrderResource($order->load('items'))
         ], 200);
     }
-    public static function notFound()
-    {
-        return response()->json([
-            'message' => 'Order not found!'
-        ], 404);
-    }
 }

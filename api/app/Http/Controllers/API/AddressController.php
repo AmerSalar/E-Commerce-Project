@@ -90,11 +90,4 @@ class AddressController extends Controller
             'message' => "address deleted successfully."
         ], 200);
     }
-
-    public static function notFound()
-    {
-        return response()->json([
-            'message' => 'Address not found!'
-        ], 404);
-    }
 }

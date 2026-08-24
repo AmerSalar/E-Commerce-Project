@@ -138,11 +138,4 @@ class UserController extends Controller
             'message' => 'user deleted successfully.'
         ], 200);
     }
-
-    public static function notFound()
-    {
-        return response()->json([
-            'message' => 'User not found!'
-        ], 404);
-    }
 }

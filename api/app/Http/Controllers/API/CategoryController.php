@@ -96,11 +96,4 @@ class CategoryController extends Controller
             'message' => 'category deleted successfully.'
         ], 200);
     }
-
-    public static function notFound()
-    {
-        return response()->json([
-            'message' => 'Category not found!'
-        ], 404);
-    }
 }
