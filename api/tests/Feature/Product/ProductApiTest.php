@@ -2,8 +2,10 @@
 
 namespace Tests\Feature\Product;
 
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
@@ -74,5 +76,44 @@ class ProductApiTest extends TestCase
 
         // status of 403
         $response->assertForbidden();
+    }
+
+    public function test_manager_can_store_product(): void
+    {
+        $categories = Category::factory()->count(2)->create();
+        $role = Role::withoutTimestamps(
+            fn() => Role::create(['name' => 'manager'])
+        );
+        $user = User::factory()->create();
+        $user->roles()->attach($role->id);
+
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/products', [
+                'name' => "Minecraft",
+                'description' => "Survival game",
+                'price' => 9.99,
+                'quantity' => 10,
+                'category_ids' => $categories->pluck('id')->toArray(),
+            ]);
+
+        // 201
+        $response->assertCreated()
+            ->assertJsonStructure([
+                'message',
+                'product' => [
+                    'id',
+                    'name',
+                    'price',
+                    'quantity',
+                ],
+            ]);
+        // check database for table "string" for data ['key'=>'value']
+        $this->assertDatabaseHas(
+            'products',
+            [
+                'name' => 'Minecraft',
+                'price' => 9.99
+            ]
+        );
     }
 }
