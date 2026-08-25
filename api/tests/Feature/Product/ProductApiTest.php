@@ -42,4 +42,17 @@ class ProductApiTest extends TestCase
             // it means at this path vvvvvvvv expect the 'disc'
             ->assertJsonPath('data.0.categories.0.name', 'disc');
     }
+    public function test_unauthenticated_user_cannot_create_product(): void
+    {
+        $response = $this->postJson('/api/products', [
+            'name' => "Minecraft",
+            'description' => "Survival game",
+            'price' => 9.99,
+            'quantity' => 10,
+            'category_ids' => [1, 2],
+        ]);
+
+        // status of 401
+        $response->assertUnauthorized();
+    }
 }
