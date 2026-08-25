@@ -5,12 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Cart\CartResource;
 use App\Models\Product;
+use App\Services\CartShoppingService;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    public function __construct(protected CartShoppingService $cartShopping) {}
     /**
      * get current user's cart
      */
@@ -30,50 +32,12 @@ class CartController extends Controller
     public function push(Request $request, Product $product)
     {
         $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:50']]);
+
         // user desired quantity from form request or by default = 1
         $userQuantity = $request->integer('quantity') ?: 1;
 
-        try {
-            $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
-
-                // Lock will be on product record until transaction ends.
-                $lockedProduct = Product::where('id', $product->id)
-                    ->lockForUpdate()
-                    ->first();
-
-                $cart = $request->user()->cart;
-                if (!$cart) {
-                    abort(response()->json([
-                        'message' => "cart was not found for this user!"
-                    ], 404));
-                }
-
-                // get already existing quantity if not then 0
-                $cartItemQuantity = $cart->items()
-                    ->where('cart_items.product_id', $lockedProduct->id)
-                    ->value('cart_items.quantity') ?? 0;
-
-                $totalWantedQuantity = $userQuantity + $cartItemQuantity;
-                if ($totalWantedQuantity > $lockedProduct->quantity) {
-                    abort(response()->json([
-                        'message' => "Only {$lockedProduct->quantity} in stock, failed to add to cart!",
-                        'desired_quantity' => $totalWantedQuantity,
-                        'currently_in_cart' => $cartItemQuantity
-                    ], 422));
-                }
-
-                // syncWithoutDetaching is like update or insert,
-                // either update existing value, or add new one
-                $cart->items()->syncWithoutDetaching([
-                    $lockedProduct->id => ['quantity' => $totalWantedQuantity]
-                ]);
-
-                return $cart;
-            });
-        } catch (HttpResponseException $e) {
-            // for the custom error we have inside the DB transaction
-            return $e->getResponse();
-        }
+        $cart = $this->cartShopping
+            ->handlePushItem($request->user(), $product, $userQuantity);
 
         return response()->json([
             'message' => "Item pushed into cart successfully.",
