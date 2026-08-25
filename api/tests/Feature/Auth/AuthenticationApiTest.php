@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 class AuthenticationApiTest extends TestCase
 {
     use RefreshDatabase;
-    public function test_can_register(): void
+    public function test_guests_can_register(): void
     {
         $payload = [
             'name' => "Mohammed",
