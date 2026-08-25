@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CartItem extends Model
 {
-    //
+    protected $guarded = [
+        'id'
+    ];
 }
