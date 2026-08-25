@@ -34,6 +34,8 @@ class RegisterController extends Controller
             message: "Registered successfully.",
         );
 
-        return new AuthenticatedResource($data);
+        return response()->json([
+            'data' => new AuthenticatedResource($data)
+        ], 201);
     }
 }

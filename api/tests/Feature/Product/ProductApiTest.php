@@ -2,13 +2,12 @@
 
 namespace Tests\Feature\Product;
 
-use App\Http\Resources\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\TestCase;
+use Tests\TestCase;
 
 class ProductApiTest extends TestCase
 {
