@@ -2,8 +2,6 @@
 
 namespace App\DTO;
 
-use App\Models\User;
-use PHPOpenSourceSaver\JWTAuth\Authenticatable;
 
 readonly class AuthData
 {
