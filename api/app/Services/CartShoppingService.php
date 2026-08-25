@@ -13,7 +13,7 @@ class CartShoppingService
 {
     public function handlePushItem(User $user, Product $product, int $userQuantity): Cart
     {
-        $cart = DB::transaction(function () use ($user, $product, $userQuantity) {
+        return DB::transaction(function () use ($user, $product, $userQuantity) {
 
             // Lock will be on product record until transaction ends.
             $lockedProduct = Product::where('id', $product->id)
@@ -52,7 +52,51 @@ class CartShoppingService
 
             return $cart;
         });
+    }
 
-        return $cart;
+
+    public function handlePullItem(User $user, Product $product, int $userQuantity): Cart
+    {
+        return DB::transaction(function () use ($user, $product, $userQuantity) {
+
+            $lockedProduct = Product::where('id', $product->id)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$lockedProduct) {
+                throw new ModelNotFoundException("Product not found!");
+            }
+
+            $cart = $user->cart;
+            if (!$cart) {
+                throw new ModelNotFoundException("Cart not found!");
+            }
+
+            $cartItemQuantity = $cart->items()
+                ->where('cart_items.product_id', $lockedProduct->id)
+                ->value('cart_items.quantity') ?? 0;
+            if ($cartItemQuantity === 0) {
+                throw ValidationException::withMessages([
+                    'message' => "This item does not exist inside the cart!"
+                ]);
+            }
+
+            $calculatedQuantity = $cartItemQuantity - $userQuantity;
+            if ($calculatedQuantity < 0) {
+                throw ValidationException::withMessages([
+                    'message' => "Only {$cartItemQuantity} in cart, failed to pull from cart!",
+                    'desired_quantity' => $userQuantity,
+                    'currently_in_cart' => $cartItemQuantity
+                ]);
+            }
+            if ($calculatedQuantity === 0) {
+                $cart->items()->detach($lockedProduct->id);
+            } else {
+                $cart->items()->syncWithoutDetaching([
+                    $lockedProduct->id => ['quantity' => $calculatedQuantity]
+                ]);
+            }
+            return $cart;
+        });
     }
 }

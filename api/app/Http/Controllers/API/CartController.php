@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Cart\CartResource;
 use App\Models\Product;
 use App\Services\CartShoppingService;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -54,51 +52,8 @@ class CartController extends Controller
         // user desired quantity from form request or by default = 1
         $userQuantity = $request->integer('quantity') ?: 1;
 
-        try {
-            $cart = DB::transaction(function () use ($request, $product, $userQuantity) {
-
-                $lockedProduct = Product::where('id', $product->id)
-                    ->lockForUpdate()
-                    ->first();
-
-                $cart = $request->user()->cart;
-                if (!$cart) {
-                    abort(response()->json([
-                        'message' => "cart was not found for this user!"
-                    ], 404));
-                }
-
-                $cartItemQuantity = $cart->items()
-                    ->where('cart_items.product_id', $lockedProduct->id)
-                    ->value('cart_items.quantity') ?? 0;
-                if ($cartItemQuantity === 0) {
-                    abort(response()->json([
-                        'message' => "This item does not exist inside the cart!"
-                    ], 422));
-                }
-
-                $calculatedQuantity = $cartItemQuantity - $userQuantity;
-                if ($calculatedQuantity < 0) {
-                    abort(response()->json([
-                        'message' => "Only {$cartItemQuantity} in cart, failed to pull from cart!",
-                        'desired_quantity' => $userQuantity,
-                        'currently_in_cart' => $cartItemQuantity
-                    ], 422));
-                }
-                if ($calculatedQuantity === 0) {
-                    $cart->items()->detach($lockedProduct->id);
-                } else {
-                    $cart->items()->syncWithoutDetaching([
-                        $lockedProduct->id => ['quantity' => $calculatedQuantity]
-                    ]);
-                }
-
-                return $cart;
-            });
-        } catch (HttpResponseException $e) {
-            return $e->getResponse();
-        }
-
+        $cart = $this->cartShopping
+            ->handlePullItem($request->user(), $product, $userQuantity);
 
         return response()->json([
             'message' => "Item pulled from cart successfully.",
