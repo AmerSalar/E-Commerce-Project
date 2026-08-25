@@ -6,6 +6,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Override;
 use phpDocumentor\Reflection\Types\Integer;
 
 class SaveProductRequest extends FormRequest
@@ -68,6 +69,13 @@ class SaveProductRequest extends FormRequest
              */
             'category_ids' => ['required', 'array', 'min:1'], // check array
             'category_ids.*' => ['integer', 'distinct', 'exists:categories,id'] // check elements of array
+        ];
+    }
+    #[Override]
+    public function messages()
+    {
+        return [
+            'category_ids.*.exists' => "Category not found!"
         ];
     }
 }

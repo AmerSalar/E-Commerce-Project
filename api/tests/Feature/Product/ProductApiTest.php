@@ -4,6 +4,7 @@ namespace Tests\Feature\Product;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
 
@@ -44,15 +45,34 @@ class ProductApiTest extends TestCase
     }
     public function test_unauthenticated_user_cannot_create_product(): void
     {
+        $categories = Category::factory()->count(2)->create();
         $response = $this->postJson('/api/products', [
             'name' => "Minecraft",
             'description' => "Survival game",
             'price' => 9.99,
             'quantity' => 10,
-            'category_ids' => [1, 2],
+            'category_ids' => $categories->pluck('id')->toArray(),
         ]);
 
         // status of 401
         $response->assertUnauthorized();
+    }
+    public function test_regular_user_cannot_create_product(): void
+    {
+        $categories = Category::factory()->count(2)->create();
+        $user = User::factory()->create();
+
+        // authenticates user via 'api' guard
+        $response = $this->actingAs($user, 'api')
+            ->postJson('/api/products', [
+                'name' => "Minecraft",
+                'description' => "Survival game",
+                'price' => 9.99,
+                'quantity' => 10,
+                'category_ids' => $categories->pluck('id')->toArray(),
+            ]);
+
+        // status of 403
+        $response->assertForbidden();
     }
 }
