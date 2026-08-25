@@ -19,7 +19,7 @@ class ProductController extends Controller
     /**
      * get all products
      */
-    public function getProducts(Request $request)
+    public function index(Request $request)
     {
         $perPage = max(1, min((int) $request->query('perPage', 10), 50));
         $products = Product::query()
@@ -33,7 +33,7 @@ class ProductController extends Controller
     /**
      * get one product
      */
-    public function getSingleProduct(Request $request, Product $product)
+    public function show(Request $request, Product $product)
     {
         $include = $request->query('include');
         if ($include === 'categories') {
@@ -44,7 +44,7 @@ class ProductController extends Controller
     /**
      * store a new product
      */
-    public function storeProduct(SaveProductRequest $request)
+    public function store(SaveProductRequest $request)
     {
         if (Gate::denies('manage')) {
             return response()->json([
@@ -93,7 +93,7 @@ class ProductController extends Controller
     /**
      * update a product
      */
-    public function updateProduct(SaveProductRequest $request, Product $product)
+    public function update(SaveProductRequest $request, Product $product)
     {
         if (Gate::denies('manage')) {
             return response()->json([
@@ -146,7 +146,7 @@ class ProductController extends Controller
     /**
      * destroy a product
      */
-    public function destroyProduct(Product $product)
+    public function destroy(Product $product)
     {
         if (Gate::denies('manage')) {
             return response()->json([

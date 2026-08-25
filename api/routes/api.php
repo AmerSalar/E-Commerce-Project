@@ -57,8 +57,8 @@ Route::prefix('products')
     ->controller(ProductController::class)
     ->group(function () {
 
-        Route::get('/', 'getProducts');
-        Route::get('/{product}', 'getSingleProduct');
+        Route::get('/', 'index');
+        Route::get('/{product}', 'show');
     });
 /**
  *
@@ -70,9 +70,9 @@ Route::prefix('categories')
     ->controller(CategoryController::class)
     ->group(function () {
 
-        Route::get('/', 'getAll')->name('getAll');
-        Route::get('/{category}', 'getOne')
-            ->name('getOne');
+        Route::get('/', 'index')->name('get-all');
+        Route::get('/{category}', 'show')
+            ->name('get-one');
     });
 
 /**
@@ -93,7 +93,7 @@ Route::middleware('auth:api')->group(function () {
         ->group(function () {
             Route::get('/', 'profile');
             Route::post('/', 'update');
-            Route::post('/change-password', 'changePassword');
+            Route::post('/change-password', 'password');
         });
     /**
      *
@@ -104,13 +104,13 @@ Route::middleware('auth:api')->group(function () {
         ->name('users.')
         ->controller(UserController::class)
         ->group(function () {
-            Route::get('/', 'getAll');
-            Route::get('/{user}', 'getOne');
-            Route::post('/{user}',  'updateName');
-            Route::post('/{user}/roles/{role_id}',  'assignRole')
+            Route::get('/', 'index');
+            Route::get('/{user}', 'show');
+            Route::post('/{user}',  'update');
+            Route::post('/{user}/roles/{role_id}',  'assign')
                 ->whereNumber('user')
                 ->whereNumber('role_id');
-            Route::delete('/{user}/roles/{role_id}',  'revokeRole')
+            Route::delete('/{user}/roles/{role_id}',  'revoke')
                 ->whereNumber('user')
                 ->whereNumber('role_id');
             Route::delete('/{user}',  'destroy');
@@ -124,9 +124,9 @@ Route::middleware('auth:api')->group(function () {
         ->name('addresses.')
         ->controller(AddressController::class)
         ->group(function () {
-            Route::get('/', 'getAll');
+            Route::get('/', 'index');
             Route::post('/', 'store');
-            Route::get('/{address}', 'getOne');
+            Route::get('/{address}', 'show');
             Route::post('/{address}', 'update');
             Route::delete('/{address}', 'destroy');
         });
@@ -139,9 +139,9 @@ Route::middleware('auth:api')->group(function () {
         ->name('products.')
         ->controller(ProductController::class)
         ->group(function () {
-            Route::post('/', 'storeProduct');
-            Route::post('/{product}',  'updateProduct');
-            Route::delete('/{product}', 'destroyProduct');
+            Route::post('/', 'store');
+            Route::post('/{product}',  'update');
+            Route::delete('/{product}', 'destroy');
         });
     /**
      *
@@ -166,7 +166,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('carts')
         ->name('carts.')
         ->group(function () {
-            Route::get('/my-cart', [CartController::class, 'getCart'])->name('my-cart');
+            Route::get('/my-cart', [CartController::class, 'index'])->name('my-cart');
             Route::delete('/my-cart', [CartController::class, 'abandon'])->name('delete-cart');
             Route::post('/my-cart/{product}', [CartController::class, 'push']);
             Route::delete('/my-cart/{product}', [CartController::class, 'pull']);
@@ -180,11 +180,11 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('orders')
         ->name('orders.')
         ->group(function () {
-            Route::get('/', [OrderController::class, 'getAll']);
-            Route::get('/pending', [OrderController::class, 'getPendingOrders']);
-            Route::post('/order-now', [OrderController::class, 'orderNow']);
-            Route::post('/deliver/{order}', [OrderController::class, 'deliverOrder']);
-            Route::delete('/cancel/{order}', [OrderController::class, 'cancelOrder']);
-            Route::get('/{order}', [OrderController::class, 'getOne']);
+            Route::get('/', [OrderController::class, 'index']);
+            Route::get('/pending', [OrderController::class, 'pending']);
+            Route::post('/order-now', [OrderController::class, 'order']);
+            Route::post('/deliver/{order}', [OrderController::class, 'deliver']);
+            Route::delete('/cancel/{order}', [OrderController::class, 'cancel']);
+            Route::get('/{order}', [OrderController::class, 'show']);
         });
 });

@@ -15,7 +15,7 @@ class CategoryController extends Controller
     /**
      * get all categories
      */
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         $include = $request->query('include');
         $perPage = $request->query('perPage', 10);
@@ -30,7 +30,7 @@ class CategoryController extends Controller
     /**
      * get one category
      */
-    public function getOne(Request $request, Category $category)
+    public function show(Request $request, Category $category)
     {
         $include = $request->query('include');
         if ($include === 'products') {

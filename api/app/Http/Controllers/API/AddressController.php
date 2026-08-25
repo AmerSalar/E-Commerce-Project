@@ -14,7 +14,7 @@ class AddressController extends Controller
     /**
      * Get all user addresses
      */
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         $perPage = $request->query('perPage', 4);
         $addresses = $request->user()
@@ -25,7 +25,7 @@ class AddressController extends Controller
     /**
      * Get one user address
      */
-    public function getOne(Address $address)
+    public function show(Address $address)
     {
         if (Gate::denies('access-address', $address)) {
             return response()->json([

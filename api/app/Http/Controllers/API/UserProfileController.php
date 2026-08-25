@@ -40,7 +40,7 @@ class UserProfileController extends Controller
     /**
      * Change my password
      */
-    public function changePassword(ChangePasswordRequest $request)
+    public function password(ChangePasswordRequest $request)
     {
         $data = $this->profileService->changePassword(
             $request->user(),

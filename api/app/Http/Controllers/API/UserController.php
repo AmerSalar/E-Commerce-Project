@@ -16,7 +16,7 @@ class UserController extends Controller
     /**
      * get all users
      */
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         if (Gate::denies('manage')) {
             return response()->json([
@@ -36,7 +36,7 @@ class UserController extends Controller
     /**
      * get one user
      */
-    public function getOne(User $user)
+    public function show(User $user)
     {
         if (Gate::denies('get', $user)) {
             return response()->json([
@@ -50,7 +50,7 @@ class UserController extends Controller
     /**
      * update name of user
      */
-    public function updateName(UpdateNameRequest $request, User $user)
+    public function update(UpdateNameRequest $request, User $user)
     {
         if (Gate::denies('updateName', $user)) {
             return response()->json([
@@ -67,7 +67,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function assignRole(User $user, int $role_id)
+    public function assign(User $user, int $role_id)
     {
         if (Gate::denies('updateRole', $user)) {
             return response()->json([
@@ -99,7 +99,7 @@ class UserController extends Controller
     /**
      * revoke a role from user
      */
-    public function revokeRole(User $user, int $role_id)
+    public function revoke(User $user, int $role_id)
     {
         if (Gate::denies('updateRole', $user)) {
             return response()->json([

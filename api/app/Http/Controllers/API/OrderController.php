@@ -18,7 +18,7 @@ class OrderController extends Controller
     /**
      * Get all current user's orders
      */
-    public function getAll(Request $request)
+    public function index(Request $request)
     {
         $perPage = $request->query('perPage', 4);
         $orders = $request->user()->orders()
@@ -32,7 +32,7 @@ class OrderController extends Controller
     /**
      * Get one of current user's orders
      */
-    public function getOne(Order $order)
+    public function show(Order $order)
     {
         if (Gate::denies('my-order', $order)) {
             return response()->json([
@@ -45,7 +45,7 @@ class OrderController extends Controller
     /**
      * Get all pending current user's orders
      */
-    public function getPendingOrders(Request $request)
+    public function pending(Request $request)
     {
         $perPage = $request->query('perPage', 4);
         $orders = $request->user()->orders()
@@ -61,7 +61,7 @@ class OrderController extends Controller
     /**
      * Order now
      */
-    public function orderNow(AddressSnapshotRequest $request)
+    public function order(AddressSnapshotRequest $request)
     {
         $validatedAddress = $request->validated();
 
@@ -149,7 +149,7 @@ class OrderController extends Controller
     /**
      * Cancel a pending order
      */
-    public function cancelOrder(Request $request, Order $order)
+    public function cancel(Request $request, Order $order)
     {
         if (Gate::denies('my-order', $order)) {
             return response()->json([
@@ -188,7 +188,7 @@ class OrderController extends Controller
     /**
      * Check order as delivered
      */
-    public function deliverOrder(Order $order)
+    public function deliver(Order $order)
     {
         if (Gate::denies('deliver-order')) {
             return response()->json([

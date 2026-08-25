@@ -14,7 +14,7 @@ class CartController extends Controller
     /**
      * get current user's cart
      */
-    public function getCart(Request $request)
+    public function index(Request $request)
     {
         $cart = $request->user()->cart;
         if (!$cart) {
