@@ -73,40 +73,9 @@ class ProductController extends Controller
         }
 
         $validated = $request->validated();
-
         $picture = $request->file('picture');
-        $oldPictureUrl = $product->picture_url;
-        $generatedFileName = null;
 
-        if ($picture) {
-            $generatedFileName = 'products/' . Str::uuid() . '.webp';
-
-            $encodedImage = HelperFunctions::compressImage($picture);
-            Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
-            $validated['picture_url'] = $generatedFileName;
-            unset($validated['picture']);
-        }
-
-        try {
-            DB::transaction(function () use ($product, $request, $validated) {
-
-                $product->update($validated);
-                $product->categories()->sync(
-                    $validated['category_ids'] ?? []
-                );
-            });
-        } catch (\Throwable $th) {
-            if ($generatedFileName) {
-                Storage::disk('public')->delete($generatedFileName);
-            }
-            return response()->json([
-                'message' => 'failed to update product!',
-            ], 422);
-        }
-
-        if ($generatedFileName && $oldPictureUrl) {
-            Storage::disk('public')->delete($oldPictureUrl);
-        }
+        $this->inventory->updateProduct($product, $picture, $validated);
 
         return response()->json([
             'message' => 'product updated successfully.',

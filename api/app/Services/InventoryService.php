@@ -43,4 +43,40 @@ class InventoryService
             ]);
         }
     }
+
+    public function updateProduct(Product $product, ?UploadedFile $picture, array $validated)
+    {
+        $oldPictureUrl = $product->picture_url;
+        $generatedFileName = null;
+
+        if ($picture) {
+            $generatedFileName = 'products/' . Str::uuid() . '.webp';
+
+            $encodedImage = HelperFunctions::compressImage($picture);
+            Storage::disk('public')->put($generatedFileName, (string) $encodedImage);
+            $validated['picture_url'] = $generatedFileName;
+            unset($validated['picture']);
+        }
+
+        try {
+            DB::transaction(function () use ($product, $validated) {
+
+                $product->update($validated);
+                $product->categories()->sync(
+                    $validated['category_ids'] ?? []
+                );
+            });
+        } catch (\Throwable $th) {
+            if ($generatedFileName) {
+                Storage::disk('public')->delete($generatedFileName);
+            }
+            throw ValidationException::withMessages([
+                'message' => 'failed to update product!',
+            ]);
+        }
+
+        if ($generatedFileName && $oldPictureUrl) {
+            Storage::disk('public')->delete($oldPictureUrl);
+        }
+    }
 }
