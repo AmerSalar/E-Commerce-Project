@@ -36,7 +36,7 @@ class ProductController extends Controller
     public function show(Request $request, Product $product)
     {
         return new ProductResource(
-            $product->withRelations($request->query('include'))
+            $product->loadRelations($request->query('include'))
         );
     }
     /**

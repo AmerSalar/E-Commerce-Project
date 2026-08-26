@@ -27,4 +27,23 @@ trait HasRelations
 
         return $query->with($result);
     }
+
+    public function loadRelations(array|string|null $relations)
+    {
+        if (empty($relations)) {
+            return $this;
+        }
+
+        $allowed = property_exists($this, 'allowedRelations')
+            ? $this->allowedRelations
+            : [];
+
+        $requested = is_string($relations) ? explode(',', $relations) : (array) $relations;
+
+        $values = array_values(array_intersect(array_map('trim', $requested), $allowed));
+
+        return empty($values)
+            ? $this
+            : $this->loadMissing($values);
+    }
 }
