@@ -67,11 +67,7 @@ class CartController extends Controller
     public function abandon(Request $request)
     {
         $cart = $request->user()->cart;
-        if (!$cart) {
-            return response()->json([
-                'message' => "cart was not found for this user!"
-            ], 404);
-        }
+
         $cart->items()->detach();
 
         return response()->json([
