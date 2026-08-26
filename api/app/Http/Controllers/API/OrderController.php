@@ -64,10 +64,12 @@ class OrderController extends Controller
     {
         $validatedAddress = $request->validated();
 
-        $order = $this->delivery->orderNow($request->user(), $validatedAddress);
+        $response = $this->delivery->orderNow($request->user(), $validatedAddress);
+        $order = $response['order'];
+        $note = $response['note'];
 
         return response()->json([
-            'message' => 'ordered successfully. order is now pending.',
+            'message' => "ordered successfully. order is now pending.{$note}",
             'order' => new OrderResource($order->loadRelations('items'))
         ], 201);
     }
@@ -104,7 +106,7 @@ class OrderController extends Controller
         $order = $this->delivery->deliverOrder($order);
 
         return response()->json([
-            'message' => 'Order delivered successfully.',
+            'message' => "Order delivered successfully.",
             'order' => new OrderResource($order->loadRelations('items'))
         ], 200);
     }

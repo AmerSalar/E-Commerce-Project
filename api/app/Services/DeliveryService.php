@@ -11,15 +11,28 @@ use Illuminate\Validation\ValidationException;
 
 class DeliveryService
 {
-    public function orderNow(User $user, array $validatedAddress): Order
+    public function orderNow(User $user, array $validatedAddress): array
     {
         return DB::transaction(function () use ($user, $validatedAddress) {
 
-            // we first make sure cart has items
+            // cart always exists, because user is authenticated user,
+            // and every authenticated user has a cart.
             $cart = $user->cart?->loadRelations('items');
-            if (!$cart || $cart->items->isEmpty()) {
+
+            // check for deleted products, which are null in cart items
+            $staleItemsCount = DB::table('cart_items')->where('cart_id', $cart->id)
+                ->whereNull('product_id')->delete();
+
+            $note = $staleItemsCount > 0
+                ? " We removed {$staleItemsCount} items from your order, because they just went out of stock."
+                : "";
+            $cart->loadRelations('items');
+
+            // if after removing the stale items, the cart was empty
+            // then it means there's nothing to order
+            if ($cart->items->isEmpty()) {
                 throw ValidationException::withMessages([
-                    "message" => "There is nothing to order, cart is empty!"
+                    'message' => "There's nothing to order, your cart is empty!{$note}",
                 ]);
             }
 
@@ -77,7 +90,7 @@ class DeliveryService
             // empty the cart
             $cart->items()->detach();
 
-            return $order;
+            return ["order" => $order, "note" => $note];
         });
     }
 
