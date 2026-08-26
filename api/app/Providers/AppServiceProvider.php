@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Address;
-use App\Models\Order;
 use App\Models\User;
 use App\Policies\OrderPolicy;
 use App\Policies\User\UserPolicy;
@@ -17,7 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(\App\Providers\TelescopeServiceProvider::class);
+        }
     }
 
     /**

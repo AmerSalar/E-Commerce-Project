@@ -37,7 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 $previous = $e->getPrevious();
                 $modelName = $previous instanceof ModelNotFoundException
                     ? class_basename($previous->getModel())
-                    : 'Resource';
+                    : 'Resource or route';
 
                 return HelperFunctions::modelNotFound($modelName);
             }
