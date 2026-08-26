@@ -23,13 +23,11 @@ class UserController extends Controller
                 'message' => 'You are not authorized!'
             ], 403);
         }
-        $perPage = $request->query('perPage', 10);
-        $include = $request->query('include');
-        if ($include === "addresses") {
-            $users = User::with(['roles', 'addresses'])->paginate($perPage);
-        } else {
-            $users = User::with('roles')->paginate($perPage);
-        }
+        $perPage = max(1, min((int) $request->query('perPage', 10), 50));
+
+        $users = User::query()->withRelations($request->query("include", 'roles'))
+            ->paginate($perPage);
+
         return new UserCollection($users);
     }
 
@@ -43,7 +41,7 @@ class UserController extends Controller
                 'message' => 'You are not authorized!'
             ], 403);
         }
-        $user->load(['roles', 'addresses']);
+        $user->loadRelations(['roles', 'addresses']);
         return new UserResource($user);
     }
 
@@ -93,7 +91,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'user role assigned successfully.',
-            'user' => new UserResource($user->load('roles'))
+            'user' => new UserResource($user->loadRelations('roles'))
         ], 200);
     }
     /**
@@ -117,7 +115,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'user role revoked successfully.',
-            'user' => new UserResource($user->load('roles'))
+            'user' => new UserResource($user->loadRelations('roles'))
         ], 200);
     }
 
