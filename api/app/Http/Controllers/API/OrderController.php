@@ -101,13 +101,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        if ($order->status !== "pending") {
-            return response()->json([
-                'message' => "Cannot deliver this order, because it is {$order->status}!"
-            ], 422);
-        }
-
-        $order->update(['status' => 'delivered']);
+        $order = $this->delivery->deliverOrder($order);
 
         return response()->json([
             'message' => 'Order delivered successfully.',

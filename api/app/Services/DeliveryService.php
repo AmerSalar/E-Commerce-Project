@@ -112,4 +112,22 @@ class DeliveryService
             $lockedOrder->update(['status' => 'cancelled']);
         });
     }
+
+    public function deliverOrder(Order $order)
+    {
+        return DB::transaction(function () use ($order) {
+            $lockedOrder = Order::where('id', $order->id)
+                ->lockForUpdate()
+                ->first();
+            if ($lockedOrder->status !== "pending") {
+                throw ValidationException::withMessages([
+                    'message' => "Cannot deliver this order, because it is {$lockedOrder->status}!"
+                ]);
+            }
+
+            $lockedOrder->update(['status' => 'delivered']);
+
+            return $lockedOrder;
+        });
+    }
 }
