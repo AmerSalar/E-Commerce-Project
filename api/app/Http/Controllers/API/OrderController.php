@@ -8,6 +8,7 @@ use App\Http\Resources\Order\OrderCollection;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\DeliveryService;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
+    public function __construct(protected DeliveryService $delivery) {}
     /**
      * Get all current user's orders
      */
@@ -39,7 +41,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        return new OrderResource($order->load('items'));
+        return new OrderResource($order->loadRelations('items'));
     }
     /**
      * Get all pending current user's orders
@@ -48,11 +50,9 @@ class OrderController extends Controller
     {
         $perPage = $request->query('perPage', 4);
         $orders = $request->user()->orders()
-            ->where('status', 'pending')->with('items')->paginate($perPage);
-
-        if ($orders->isEmpty()) {
-            return response()->noContent();
-        }
+            ->where('status', 'pending')
+            ->withRelations($request->query('include', 'items'))
+            ->paginate($perPage);
 
         return new OrderCollection($orders);
     }
@@ -64,85 +64,12 @@ class OrderController extends Controller
     {
         $validatedAddress = $request->validated();
 
-
-        try {
-            // we add a transaction to safely do the actions
-            $order = DB::transaction(function () use ($request, $validatedAddress) {
-
-                // we first make sure cart has items
-                $cart = $request->user()->cart?->load('items');
-                if (!$cart || $cart->items->isEmpty()) {
-                    abort(response()->json([
-                        'message' => 'There is nothing to order, cart is empty!'
-                    ], 422));
-                }
-
-                // we lock products to avoid stock updates
-                $productIds = $cart->items->pluck('id');
-                $products = Product::whereIn('id', $productIds)
-                    ->lockForUpdate()
-                    ->get()
-                    ->keyBy('id');
-
-                // attach the order items from the cart items
-                $pivotTableData = [];
-                // we need to calculate total based on locked products
-                $total = 0.00;
-                // validate that item is 'still' available in stock
-                foreach ($cart->items as $item) {
-                    $cartQuantity = $item->pivot->quantity;
-                    $product = $products->get($item->id);
-                    if (!$product) {
-                        abort(response()->json([
-                            'message' => "Sorry, {$item->name} just went out of stock!",
-                        ], 422));
-                    }
-                    $total += $product->price * $cartQuantity;
-
-                    if ($product->quantity < $cartQuantity) {
-                        abort(response()->json([
-                            'message' => "Sorry, {$product->name} is out of stock!",
-                            'available_stock' => $product->quantity,
-                            'in_cart' => $cartQuantity
-                        ], 422));
-                    }
-
-
-                    $pivotTableData[$item->id] = [
-                        'item_name' => $item->name,
-                        'item_price' => $item->price,
-                        'quantity' => $item->pivot->quantity,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-
-                    // take the quantity from the stock
-                    $product->decrement('quantity', $item->pivot->quantity);
-                }
-
-                // create the order for the user, and calculate the total
-                $order = Order::create([
-                    'user_id' => $request->user()->id,
-                    'address_snapshot' => $validatedAddress,
-                    'total' => $total,
-                    'status' => "pending"
-                ]);
-
-                $order->items()->attach($pivotTableData);
-
-                // empty the cart
-                $cart->items()->detach();
-
-                return $order;
-            });
-        } catch (HttpResponseException $e) {
-            return $e->getResponse();
-        }
+        $order = $this->delivery->orderNow($request->user(), $validatedAddress);
 
         return response()->json([
             'message' => 'ordered successfully. order is now pending.',
-            'order' => new OrderResource($order->load('items'))
-        ]);
+            'order' => new OrderResource($order->loadRelations('items'))
+        ], 201);
     }
 
     /**
@@ -205,7 +132,7 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order delivered successfully.',
-            'order' => new OrderResource($order->load('items'))
+            'order' => new OrderResource($order->loadRelations('items'))
         ], 200);
     }
 }
