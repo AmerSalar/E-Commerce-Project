@@ -37,7 +37,7 @@ Route::post('/refresh', RefreshController::class)->name('refresh')
  */
 Route::post('/forgot-password', [ResetPasswordController::class, 'forgot'])
     ->name('forgot-password')
-    ->middleware('throttle:2,1');
+    ->middleware('throttle:3,1');
 Route::post('/verify-code', [ResetPasswordController::class, 'verify'])
     ->name('verify-code')
     ->middleware('throttle:10,5');
