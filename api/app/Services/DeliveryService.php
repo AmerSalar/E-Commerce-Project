@@ -47,9 +47,7 @@ class DeliveryService
 
                 if ($product->quantity < $cartQuantity) {
                     throw ValidationException::withMessages([
-                        'message' => "Sorry, {$product->name} is out of stock!",
-                        'available_stock' => $product->quantity,
-                        'in_cart' => $cartQuantity
+                        "message" => "{$product->name} is out of stock, only {$product->quantity} is available in stock, your cart has {$cartQuantity}!",
                     ]);
                 }
 

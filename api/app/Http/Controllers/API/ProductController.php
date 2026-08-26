@@ -49,10 +49,9 @@ class ProductController extends Controller
                 'message' => 'you are not authorized to create a product!',
             ], 403);
         }
-
         $validated = $request->validated();
-
         $picture = $request->file('picture');
+
         $generatedFileName = null;
         if ($picture) {
             $generatedFileName = 'products/' . Str::uuid() . '.webp';

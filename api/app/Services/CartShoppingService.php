@@ -36,14 +36,10 @@ class CartShoppingService
 
             $totalWantedQuantity = $userQuantity + $cartItemQuantity;
             if ($totalWantedQuantity > $lockedProduct->quantity) {
-
                 throw ValidationException::withMessages([
-                    'message' => "Only {$lockedProduct->quantity} in stock, failed to add to cart!",
-                    'desired_quantity' => $totalWantedQuantity,
-                    'currently_in_cart' => $cartItemQuantity
+                    'message' => "Request failed! Only {$lockedProduct->quantity} in stock, you requested to add {$totalWantedQuantity}, your cart has {$cartItemQuantity}!"
                 ]);
             }
-
             // syncWithoutDetaching is like update or insert,
             // either update existing value, or add new one
             $cart->items()->syncWithoutDetaching([
@@ -84,9 +80,7 @@ class CartShoppingService
             $calculatedQuantity = $cartItemQuantity - $userQuantity;
             if ($calculatedQuantity < 0) {
                 throw ValidationException::withMessages([
-                    'message' => "Only {$cartItemQuantity} in cart, failed to pull from cart!",
-                    'desired_quantity' => $userQuantity,
-                    'currently_in_cart' => $cartItemQuantity
+                    'message' => "Request failed! Only {$cartItemQuantity} in cart, you requested to remove {$userQuantity}!",
                 ]);
             }
             if ($calculatedQuantity === 0) {
