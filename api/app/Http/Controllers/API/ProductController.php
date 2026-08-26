@@ -85,7 +85,7 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'product created successfully.',
-            'product' => new ProductResource($product->load('categories'))
+            'product' => new ProductResource($product->loadRelations('categories'))
         ], 201);
     }
     /**
@@ -137,7 +137,7 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'product updated successfully.',
-            'product' => new ProductResource($product->load('categories'))
+            'product' => new ProductResource($product->loadRelations('categories'))
         ], 200);
     }
 

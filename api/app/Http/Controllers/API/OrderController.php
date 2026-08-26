@@ -20,12 +20,11 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->query('perPage', 4);
+        $perPage = max(1, min($request->query('perPage', 4), 50));
         $orders = $request->user()->orders()
-            ->with('items')->paginate($perPage);
-        if ($orders->isEmpty()) {
-            return response()->noContent();
-        }
+            ->withRelations($request->query('include', 'items'))
+            ->latest()
+            ->paginate($perPage);
 
         return new OrderCollection($orders);
     }
