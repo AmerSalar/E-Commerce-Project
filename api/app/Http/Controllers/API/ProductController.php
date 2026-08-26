@@ -35,11 +35,9 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        $include = $request->query('include');
-        if ($include === 'categories') {
-            $product = $product->load('categories');
-        }
-        return new ProductResource($product);
+        return new ProductResource(
+            $product->withRelations($request->query('include'))
+        );
     }
     /**
      * store a new product

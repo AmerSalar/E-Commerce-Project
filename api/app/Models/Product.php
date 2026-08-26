@@ -12,7 +12,7 @@ class Product extends Model
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory, HasRelations;
 
-    protected array $allowedRelations = ['categories', 'carts', 'orders'];
+    protected array $allowedRelations = ['categories'];
 
     protected $guarded = ['id'];
 
