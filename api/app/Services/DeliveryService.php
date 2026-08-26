@@ -82,4 +82,34 @@ class DeliveryService
             return $order;
         });
     }
+
+    public function cancelOrder(Order $order): void
+    {
+        DB::transaction(function () use ($order) {
+            $lockedOrder = Order::where('id', $order->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($lockedOrder->status !== "pending") {
+                throw ValidationException::withMessages([
+                    'message' => "Cannot cancel this order, because it is {$lockedOrder->status}!"
+                ]);
+            }
+
+            $productIds = $lockedOrder->items->pluck('id');
+            $products = Product::whereIn('id', $productIds)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            foreach ($lockedOrder->items as $item) {
+                $product = $products->get($item->id);
+                if ($product) {
+                    $product->increment('quantity', $item->pivot->quantity);
+                }
+            }
+
+            $lockedOrder->update(['status' => 'cancelled']);
+        });
+    }
 }

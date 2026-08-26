@@ -75,7 +75,7 @@ class OrderController extends Controller
     /**
      * Cancel a pending order
      */
-    public function cancel(Request $request, Order $order)
+    public function cancel(Order $order)
     {
         if (Gate::denies('my-order', $order)) {
             return response()->json([
@@ -83,28 +83,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        if ($order->status !== "pending") {
-            return response()->json([
-                'message' => "Cannot cancel this order, because it is {$order->status}!"
-            ], 422);
-        }
-
-        DB::transaction(function () use ($order) {
-            $productIds = $order->items->pluck('id');
-            $products = Product::whereIn('id', $productIds)
-                ->lockForUpdate()
-                ->get()
-                ->keyBy('id');
-
-            foreach ($order->items as $item) {
-                $product = $products->get($item->id);
-                if ($product) {
-                    $product->increment('quantity', $item->pivot->quantity);
-                }
-            }
-
-            $order->update(['status' => 'cancelled']);
-        });
+        $this->delivery->cancelOrder($order);
 
         return response()->json([
             'message' => 'order cancelled successfully.'
