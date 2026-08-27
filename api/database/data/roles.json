@@ -1,0 +1,14 @@
+[
+    {
+        "name": "super_admin"
+    },
+    {
+        "name": "admin"
+    },
+    {
+        "name": "manager"
+    },
+    {
+        "name": "driver"
+    }
+]

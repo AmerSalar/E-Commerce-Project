@@ -1,0 +1,142 @@
+[
+    {
+        "user_id": 1,
+        "phone": "07701234501",
+        "city": "Sulaymaniyah",
+        "street": "Salim Street",
+        "building": 14
+    },
+    {
+        "user_id": 2,
+        "phone": "07501234502",
+        "city": "Erbil",
+        "street": "60 Meter Road",
+        "building": 28
+    },
+    {
+        "user_id": 3,
+        "phone": "07701234503",
+        "city": "Duhok",
+        "street": "KRO Street",
+        "building": 7
+    },
+    {
+        "user_id": 4,
+        "phone": "07501234504",
+        "city": "Sulaymaniyah",
+        "street": "Mawlawi Street",
+        "building": 45
+    },
+    {
+        "user_id": 5,
+        "phone": "07701234505",
+        "city": "Halabja",
+        "street": "Sirwan Road",
+        "building": 3
+    },
+    {
+        "user_id": 6,
+        "phone": "07501234506",
+        "city": "Erbil",
+        "street": "100 Meter Road",
+        "building": 112
+    },
+    {
+        "user_id": 7,
+        "phone": "07701234507",
+        "city": "Sulaymaniyah",
+        "street": "Sarchinar Main Road",
+        "building": 19
+    },
+    {
+        "user_id": 8,
+        "phone": "07501234508",
+        "city": "Erbil",
+        "street": "Bakhtiyari Street",
+        "building": 52
+    },
+    {
+        "user_id": 9,
+        "phone": "07701234509",
+        "city": "Ranya",
+        "street": "Bazar Street",
+        "building": 8
+    },
+    {
+        "user_id": 10,
+        "phone": "07501234510",
+        "city": "Duhok",
+        "street": "Nawroz Street",
+        "building": 34
+    },
+    {
+        "user_id": 11,
+        "phone": "07701234511",
+        "city": "Sulaymaniyah",
+        "street": "Toy Malik Street",
+        "building": 23
+    },
+    {
+        "user_id": 12,
+        "phone": "07501234512",
+        "city": "Erbil",
+        "street": "Gulan Street",
+        "building": 88
+    },
+    {
+        "user_id": 13,
+        "phone": "07701234513",
+        "city": "Kalar",
+        "street": "Sirwan Street",
+        "building": 15
+    },
+    {
+        "user_id": 14,
+        "phone": "07501234514",
+        "city": "Sulaymaniyah",
+        "street": "Ibrahim Pasha Street",
+        "building": 61
+    },
+    {
+        "user_id": 15,
+        "phone": "07701234515",
+        "city": "Zakho",
+        "street": "Delal Bridge Road",
+        "building": 9
+    },
+    {
+        "user_id": 16,
+        "phone": "07501234516",
+        "city": "Erbil",
+        "street": "Ankawa Main Street",
+        "building": 40
+    },
+    {
+        "user_id": 17,
+        "phone": "07701234517",
+        "city": "Sulaymaniyah",
+        "street": "Rzgari Street",
+        "building": 12
+    },
+    {
+        "user_id": 18,
+        "phone": "07501234518",
+        "city": "Soran",
+        "street": "Peshawa Street",
+        "building": 5
+    },
+    {
+        "user_id": 19,
+        "phone": "07701234519",
+        "city": "Duhok",
+        "street": "Malta Street",
+        "building": 27
+    },
+    {
+        "user_id": 20,
+        "phone": "07501234520",
+        "city": "Said Sadiq",
+        "street": "Bazar Main Road",
+        "building": 11
+    }
+]
