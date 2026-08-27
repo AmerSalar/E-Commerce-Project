@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Models\User;
 use App\Policies\OrderPolicy;
 use App\Policies\User\UserPolicy;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,7 +33,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('get', [UserPolicy::class, 'get']);
         Gate::define('access-address', function (User $user, Address $address) {
             return $user->id === $address->user_id
-                || $user->hasRole(['super_admin', 'admin', 'manager']);
+                || $user->hasRole(['super_admin', 'admin', 'manager'])
+                ? Response::allow()
+                : Response::deny("You do not have permission to access this address!");
         });
         Gate::define('deliver-order', [OrderPolicy::class, 'deliver']);
         Gate::define('my-order', [OrderPolicy::class, 'getOne']);

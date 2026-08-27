@@ -19,10 +19,14 @@ class UserPolicy
     {
         // no updating name for owner, only he can do it for himself
 
-        // FIX THIS
-        if ($user->hasRole('super_admin') && $authUser->id === $user->id) {
-            return Response::allow();
+        if ($user->hasRole('super_admin')) {
+
+            return $authUser->id === $user->id
+                ? Response::allow()
+                // if it was admin, deny here before moving to next check
+                : Response::deny("You do not have permission to update name of this user!");
         }
+
         return $authUser->hasRole(['admin', 'super_admin']) ||
             $authUser->id === $user->id
             ? Response::allow()
