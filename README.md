@@ -8,7 +8,7 @@ role-based access control (RBAC), concurrency-safe shopping cart & checkout flow
 - **PHP** `^8.3` or higher
 - **Composer** (PHP dependency manager)
 - **PHP GD extension** — required by `intervention/image` for image processing
-- **MySQL** — default DB driver (`DB_CONNECTION=mysql`), no separate DB server needed
+- **MySQL** — default DB driver (`DB_CONNECTION=mysql`), a separate `mysql` server needed
   - _Alternative:_ SQLite or PostgreSQL.
 
 ## INSTALLATION
@@ -71,6 +71,20 @@ Run the server
 php artisan serve
 ```
 
+## MIGHT WANT
+
+Run tests using
+
+```Bash
+php artisan test
+```
+
+Check out the API documentation at this route
+
+```bash
+/docs/api
+```
+
 ## KEY FEATURES
 
 1. Stateless JWT Auth:
@@ -87,3 +101,44 @@ php artisan serve
 5. Multi-Step Password Reset:
    6-digit numeric OTP generation, verification handoff tokens,
    and password reuse prevention.
+
+## HOW IT WAS MADE
+
+- **JWT authentication** (`php-open-source-saver/jwt-auth`) — login, register, refresh, and forced logout via token blacklisting on password change
+
+- **Role-based access control** via Laravel Gates & Policies — both auto-resolved model policies (`Gate::policy()`) and custom-named gates (`Gate::define()`) for non-CRUD actions
+
+- **Pessimistic locking with `lockForUpdate()`** inside `DB::transaction()` — used for cart/stock mutations to prevent race conditions and overselling under concurrent requests
+
+- **Eloquent relationships**, including `belongsToMany` with custom pivot tables (`withPivot`, `withTimestamps`, `syncWithoutDetaching`) for cart items and order items
+
+- **Form Request validation classes** for request-level authorization and rules, keeping controllers thin
+
+- **API Resources & Resource Collections** for consistent, whitelisted JSON response shaping (no accidental field leakage from Eloquent models)
+
+- **Service layer pattern** — business logic (e.g. checkout, cart operations) extracted out of controllers into dedicated service classes
+
+- **Custom reusable traits** — a relation-whitelisting trait (`HasRelations`) to safely support `?include=` query params without exposing arbitrary Eloquent relations
+
+- **Migrations with deliberate FK strategies** — `cascadeOnDelete()` vs `nullOnDelete()` chosen per-table based on whether historical data (orders) needs preserving vs. active data (carts) doesn't
+
+- **Database factories & seeders** for reproducible local/test data, including role and address factories
+
+- **Automated testing with Pest** — feature tests for auth/orders/products and unit tests for helper classes
+
+- **Centralized exception handling** in `bootstrap/app.php` instead of per-route `->missing()` callbacks, for consistent error responses
+
+- **Custom validation exceptions** (`ValidationException::withMessages()`) for business-rule failures, not just field validation
+
+- **Rate limiting / throttling** on sensitive auth endpoints (login, register, password reset, OTP verification)
+
+- **Image processing on upload** (`intervention/image`) — compressing, resizing, and format-converting product photos server-side
+
+- **Environment-gated service providers** — conditionally registering dev-only tooling (Laravel Telescope) so it never loads in production
+
+- **API documentation generation** (`dedoc/scramble`) via inline docblock annotations on Resources/Requests
+
+- **Route model binding** with route-level constraints (`whereNumber()`) to prevent malformed parameter matching
+
+This project is for portfolio purposes only. All rights reserved.
+Feel free to read the code for learning purposes, but please don't reuse or redistribute it without permission.
