@@ -8,6 +8,7 @@ role-based access control (RBAC), concurrency-safe shopping cart & checkout flow
 - **PHP** `^8.3` or higher
 - **Composer** (PHP dependency manager)
 - **PHP GD extension** — required by `intervention/image` for image processing
+- **Concurrency Testing Extensions:** `pcntl` and `sockets` (Required for parallel testing via `spatie/fork`).
 - **MySQL** — default DB driver (`DB_CONNECTION=mysql`), a separate `mysql` server needed
   - _Alternative:_ SQLite or PostgreSQL.
 
@@ -22,8 +23,18 @@ cd api
 
 Install PHP dependencies
 
+- Note: `Spatie/fork` requires `pcntl fork` and `sockets`, for paralell processing, therefore you need `Docker`, `Linux` or `WSL` to install it.
+
+If you have the platform requirements, run this:
+
 ```Bash
 composer install
+```
+
+If you want to install dependencies without getting platform requirement errors, run this command instead:
+
+```Bash
+composer install --ignore-platform-reqs
 ```
 
 Configure the environment
