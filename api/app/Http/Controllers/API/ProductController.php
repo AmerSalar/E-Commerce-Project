@@ -46,11 +46,8 @@ class ProductController extends Controller
      */
     public function store(SaveProductRequest $request)
     {
-        if (Gate::denies('manage')) {
-            return response()->json([
-                'message' => 'you are not authorized to create a product!',
-            ], 403);
-        }
+        Gate::authorize('manage');
+
         $validated = $request->validated();
         $picture = $request->file('picture');
 

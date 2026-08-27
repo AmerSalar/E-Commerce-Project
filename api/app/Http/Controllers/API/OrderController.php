@@ -35,11 +35,7 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        if (Gate::denies('my-order', $order)) {
-            return response()->json([
-                'message' => 'You are not authorized to access this order!'
-            ], 403);
-        }
+        Gate::authorize('my-order', $order);
 
         return new OrderResource($order->loadRelations('items'));
     }
@@ -79,11 +75,7 @@ class OrderController extends Controller
      */
     public function cancel(Order $order)
     {
-        if (Gate::denies('my-order', $order)) {
-            return response()->json([
-                'message' => 'You are not authorized to cancel this order!'
-            ], 403);
-        }
+        Gate::authorize('my-order', $order);
 
         $this->delivery->cancelOrder($order);
 
@@ -97,11 +89,7 @@ class OrderController extends Controller
      */
     public function deliver(Order $order)
     {
-        if (Gate::denies('deliver-order')) {
-            return response()->json([
-                'message' => 'You are not authorized to deliver this order!'
-            ], 403);
-        }
+        Gate::authorize('deliver-order');
 
         $order = $this->delivery->deliverOrder($order);
 

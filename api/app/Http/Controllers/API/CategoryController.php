@@ -17,12 +17,11 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $include = $request->query('include');
         $perPage = $request->query('perPage', 10);
 
-        $categories = $include === 'products' ?
-            Category::with('products')->paginate($perPage) :
-            Category::paginate($perPage);
+        $categories = Category::query()
+            ->withRelations($request->query('include'))
+            ->paginate($perPage);
 
         return new CategoryCollection($categories);
     }
@@ -32,10 +31,8 @@ class CategoryController extends Controller
      */
     public function show(Request $request, Category $category)
     {
-        $include = $request->query('include');
-        if ($include === 'products') {
-            $category = $category->load('products');
-        }
+        $category = $category->loadRelations($request->query('include'));
+
         return new CategoryResource($category);
     }
 
@@ -44,11 +41,7 @@ class CategoryController extends Controller
      */
     public function store(SaveCategoryRequest $request)
     {
-        if (Gate::denies('manage')) {
-            return response()->json([
-                'message' => 'you are not authorized to create a category!',
-            ], 403);
-        }
+        Gate::authorize('manage');
 
         $validated = $request->validated();
 
@@ -65,11 +58,8 @@ class CategoryController extends Controller
      */
     public function update(SaveCategoryRequest $request, Category $category)
     {
-        if (Gate::denies('manage')) {
-            return response()->json([
-                'message' => 'you are not authorized to update this category!',
-            ], 403);
-        }
+        Gate::authorize('manage');
+
         $validated = $request->validated();
 
         $category->update($validated);
@@ -85,11 +75,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if (Gate::denies('manage')) {
-            return response()->json([
-                'message' => 'you are not authorized to delete this category!',
-            ], 403);
-        }
+        Gate::authorize('manage');
         $category->delete();
 
         return response()->json([

@@ -8,6 +8,7 @@ use App\Http\Resources\User\AddressResource;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\UnauthorizedException;
 
 class AddressController extends Controller
 {
@@ -27,11 +28,7 @@ class AddressController extends Controller
      */
     public function show(Address $address)
     {
-        if (Gate::denies('access-address', $address)) {
-            return response()->json([
-                'message' => 'you are not authorized!'
-            ], 403);
-        }
+        Gate::authorize('access-address', $address);
 
         return new AddressResource($address);
     }
@@ -57,11 +54,7 @@ class AddressController extends Controller
      */
     public function update(AddressSnapshotRequest $request, Address $address)
     {
-        if (Gate::denies('access-address', $address)) {
-            return response()->json([
-                'message' => 'you are not authorized!'
-            ], 403);
-        }
+        Gate::authorize('access-address', $address);
 
         $validated = $request->validated();
 
@@ -78,11 +71,7 @@ class AddressController extends Controller
      */
     public function destroy(Address $address)
     {
-        if (Gate::denies('access-address', $address)) {
-            return response()->json([
-                'message' => 'you are not authorized!'
-            ], 403);
-        }
+        Gate::authorize('access-address', $address);
 
         $address->delete();
 

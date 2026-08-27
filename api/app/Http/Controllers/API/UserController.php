@@ -18,11 +18,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if (Gate::denies('manage')) {
-            return response()->json([
-                'message' => 'You are not authorized!'
-            ], 403);
-        }
+        Gate::authorize('manage');
         $perPage = max(1, min((int) $request->query('perPage', 10), 50));
 
         $users = User::query()->withRelations($request->query("include", 'roles'))
@@ -36,11 +32,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        if (Gate::denies('get', $user)) {
-            return response()->json([
-                'message' => 'You are not authorized!'
-            ], 403);
-        }
+        Gate::authorize('get', $user);
         $user->loadRelations(['roles', 'addresses']);
         return new UserResource($user);
     }
@@ -50,11 +42,7 @@ class UserController extends Controller
      */
     public function update(UpdateNameRequest $request, User $user)
     {
-        if (Gate::denies('updateName', $user)) {
-            return response()->json([
-                'message' => 'You are not allowed to change name of this user!'
-            ], 403);
-        }
+        Gate::authorize('updateName', $user);
 
         $validated = $request->validated();
         $user->update($validated);
@@ -67,11 +55,7 @@ class UserController extends Controller
 
     public function assign(User $user, int $role_id)
     {
-        if (Gate::denies('updateRole', $user)) {
-            return response()->json([
-                'message' => 'You cannot assign roles to this user!'
-            ], 403);
-        };
+        Gate::authorize('updateRole', $user);
 
         $role = Role::where('id', $role_id)->first();
         if (!$role) {
@@ -99,11 +83,7 @@ class UserController extends Controller
      */
     public function revoke(User $user, int $role_id)
     {
-        if (Gate::denies('updateRole', $user)) {
-            return response()->json([
-                'message' => 'You cannot revoke roles of this user!'
-            ], 403);
-        };
+        Gate::authorize('updateRole', $user);
 
         $detached = $user->roles()->detach($role_id);
 
@@ -124,11 +104,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (Gate::denies('deleteUser', $user)) {
-            return response()->json([
-                'message' => 'You cannot delete this user account!'
-            ], 403);
-        };
+        Gate::authorize('deleteUser', $user);
 
         $user->delete();
 
