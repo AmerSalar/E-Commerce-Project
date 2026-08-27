@@ -18,7 +18,7 @@ class ProductCategorySeeder extends Seeder
 
         $products->each(function ($product) use ($categories) {
             $product->categories()->attach(
-                $categories->random(2)->pluck('id')
+                $categories->random(rand(2, 3))->pluck('id')
             );
         });
     }

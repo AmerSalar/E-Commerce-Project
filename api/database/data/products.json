@@ -1,0 +1,152 @@
+[
+    {
+        "name": "Red Dead Redemption 2",
+        "description": "Open-world western action-adventure disc.",
+        "price": 59.99,
+        "quantity": 30
+    },
+    {
+        "name": "God of War Ragnarök",
+        "description": "Norse mythology action-adventure disc.",
+        "price": 69.99,
+        "quantity": 25
+    },
+    {
+        "name": "Marvel's Spider-Man 2",
+        "description": "Superhero action-adventure disc.",
+        "price": 69.99,
+        "quantity": 28
+    },
+    {
+        "name": "Elden Ring",
+        "description": "Challenging open-world dark fantasy RPG.",
+        "price": 59.99,
+        "quantity": 40
+    },
+    {
+        "name": "The Witcher 3: Wild Hunt",
+        "description": "Story-rich open-world fantasy RPG.",
+        "price": 39.99,
+        "quantity": 35
+    },
+    {
+        "name": "Cyberpunk 2077: Ultimate Edition",
+        "description": "Open-world dystopian action RPG disc.",
+        "price": 59.99,
+        "quantity": 22
+    },
+    {
+        "name": "The Last of Us Part I",
+        "description": "Post-apocalyptic narrative survival adventure.",
+        "price": 69.99,
+        "quantity": 18
+    },
+    {
+        "name": "The Last of Us Part II Remastered",
+        "description": "Intense survival action and emotional drama.",
+        "price": 49.99,
+        "quantity": 20
+    },
+    {
+        "name": "Grand Theft Auto V",
+        "description": "Blockbuster open-world crime action.",
+        "price": 29.99,
+        "quantity": 50
+    },
+    {
+        "name": "Ghost of Tsushima Director's Cut",
+        "description": "Open-world samurai action-adventure.",
+        "price": 59.99,
+        "quantity": 24
+    },
+    {
+        "name": "Horizon Forbidden West",
+        "description": "Sci-fi post-apocalyptic action RPG.",
+        "price": 49.99,
+        "quantity": 26
+    },
+    {
+        "name": "Final Fantasy VII Rebirth",
+        "description": "Action RPG with cinematic storytelling.",
+        "price": 69.99,
+        "quantity": 15
+    },
+    {
+        "name": "Resident Evil 4 Remake",
+        "description": "Survival horror action remake.",
+        "price": 49.99,
+        "quantity": 32
+    },
+    {
+        "name": "Baldur's Gate 3",
+        "description": "Turn-based D&D tactical role-playing game.",
+        "price": 69.99,
+        "quantity": 20
+    },
+    {
+        "name": "Sekiro: Shadows Die Twice",
+        "description": "High-difficulty shinobi action game.",
+        "price": 59.99,
+        "quantity": 16
+    },
+    {
+        "name": "Dark Souls III: The Fire Fades",
+        "description": "Action RPG including all DLC expansions.",
+        "price": 39.99,
+        "quantity": 22
+    },
+    {
+        "name": "Bloodborne",
+        "description": "Gothic horror action RPG classic.",
+        "price": 19.99,
+        "quantity": 14
+    },
+    {
+        "name": "Lies of P",
+        "description": "Belle Époque soulslike action RPG.",
+        "price": 49.99,
+        "quantity": 19
+    },
+    {
+        "name": "Hogwarts Legacy",
+        "description": "Open-world action RPG set in the 1800s.",
+        "price": 59.99,
+        "quantity": 38
+    },
+    {
+        "name": "Forza Horizon 5",
+        "description": "Open-world festival racing simulator.",
+        "price": 59.99,
+        "quantity": 27
+    },
+    {
+        "name": "EA Sports FC 24",
+        "description": "Authentic worldwide football simulation.",
+        "price": 39.99,
+        "quantity": 45
+    },
+    {
+        "name": "Mortal Kombat 1",
+        "description": "Reborn universe fighting game.",
+        "price": 49.99,
+        "quantity": 21
+    },
+    {
+        "name": "Alan Wake 2",
+        "description": "Psychological survival horror mystery.",
+        "price": 59.99,
+        "quantity": 17
+    },
+    {
+        "name": "Star Wars Jedi: Survivor",
+        "description": "Third-person galaxy-spanning action adventure.",
+        "price": 49.99,
+        "quantity": 23
+    },
+    {
+        "name": "Monster Hunter: World",
+        "description": "Cooperative action beast-hunting RPG.",
+        "price": 29.99,
+        "quantity": 30
+    }
+]
