@@ -29,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        JsonResource::withoutWrapping();
         Gate::policy(User::class, UserPolicy::class);
         Gate::define('manage', [UserPolicy::class, 'manage']);
         Gate::define('get', [UserPolicy::class, 'get']);
