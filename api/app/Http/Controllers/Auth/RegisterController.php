@@ -9,6 +9,7 @@ use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {

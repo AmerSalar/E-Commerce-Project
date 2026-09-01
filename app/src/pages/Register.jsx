@@ -1,6 +1,44 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useState } from "react";
+import api from "../api/axios";
 
 export default function Register() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      // axios post takes path + payload
+      const response = await api.post("/register", formData);
+
+      if (response.data.data.token) {
+        localStorage.setItem("auth_token", response.data.data.token);
+      }
+      console.log(response.data);
+
+      <Navigate to={"/"} />;
+    } catch (error) {
+      if (error.response?.status === 422) {
+        console.log("validation errors!");
+      } else {
+        console.log("status: " + error.response?.status);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       {/*
@@ -24,7 +62,7 @@ export default function Register() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="name"
@@ -39,6 +77,7 @@ export default function Register() {
                   type="text"
                   required
                   autoComplete="name"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -57,6 +96,7 @@ export default function Register() {
                   type="email"
                   required
                   autoComplete="email"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -78,6 +118,7 @@ export default function Register() {
                   type="password"
                   required
                   autoComplete="new-password"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -98,6 +139,7 @@ export default function Register() {
                   type="password"
                   required
                   autoComplete="new-password"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
