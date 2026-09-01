@@ -5,7 +5,10 @@ import Login from "./pages/Login";
 
 // placeholder components
 function Home() {
-  return <h1 className="text-xl font-bold">Welcome Home 🏠</h1>;
+  return <h1 className="text-xl font-bold">Welcome Home</h1>;
+}
+function Profile() {
+  return <h1 className="text-xl font-bold">Your Profile</h1>;
 }
 
 function NotFound() {
@@ -23,6 +26,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: "me",
+        element: <Profile />,
       },
     ],
   },
