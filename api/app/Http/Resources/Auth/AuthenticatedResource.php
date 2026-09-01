@@ -13,6 +13,7 @@ use Override;
  */
 class AuthenticatedResource extends JsonResource
 {
+    // public static $wrap = null;
     /**
      * Transform the resource into an array.
      *
@@ -20,6 +21,7 @@ class AuthenticatedResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             /**
              * @var string

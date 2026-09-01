@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Policies\OrderPolicy;
 use App\Policies\User\UserPolicy;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
