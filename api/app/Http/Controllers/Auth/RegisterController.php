@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\DTO\AuthData;
+use App\Helpers\HelperFunctions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
@@ -29,9 +30,14 @@ class RegisterController extends Controller
         });
         $token = Auth::login($user);
 
+        $cookie = HelperFunctions::makeCookie(
+            'token',
+            $token,
+            24 * 60
+        );
+
         $data = new AuthData(
             user: $user,
-            token: $token,
             message: "Registered successfully.",
         );
 
@@ -39,6 +45,6 @@ class RegisterController extends Controller
             new AuthenticatedResource($data)
             ,
             201
-        );
+        )->withCookie($cookie);
     }
 }

@@ -2,21 +2,15 @@
 
 namespace App\Helpers;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use Illuminate\Http\File;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Symfony\Component\HttpFoundation\Cookie;
 
 class HelperFunctions
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
     public static function compressImage(File|UploadedFile $picture)
     {
         $imgManager = new ImageManager(new Driver());
@@ -36,5 +30,23 @@ class HelperFunctions
         return response()->json([
             'message' => "$modelName not found!"
         ], 404);
+    }
+
+    public static function makeCookie(
+        string $cookieName,
+        string $cookieValue,
+        int $lifespan
+    ): Cookie {
+        return cookie(
+            $cookieName,
+            $cookieValue,
+            $lifespan,
+            '/',
+            null,
+            config('app.env') === "production",
+            true,
+            false,
+            "Lax"
+        );
     }
 }

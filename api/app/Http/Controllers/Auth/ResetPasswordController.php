@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\DTO\AuthData;
+use App\Helpers\HelperFunctions;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
@@ -147,12 +148,20 @@ class ResetPasswordController extends Controller
 
         $token = Auth::login($user);
 
+        $cookie = HelperFunctions::makeCookie(
+            'token',
+            $token,
+            24 * 60
+        );
+
         $data = new AuthData(
             user: $user,
-            token: $token,
             message: "Password reset successfully. You are now logged-in",
         );
 
-        return new AuthenticatedResource($data);
+        return response()->json(
+            new AuthenticatedResource($data),
+            200
+        )->withCookie($cookie);
     }
 }

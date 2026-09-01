@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\DTO\AuthData;
+use App\Helpers\HelperFunctions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Http\Resources\Auth\AuthenticatedResource;
@@ -27,12 +28,20 @@ class LoginController extends Controller
             );
         }
 
+        $cookie = HelperFunctions::makeCookie(
+            "token",
+            $token,
+            60 * 24
+        );
+
         $data = new AuthData(
             user: Auth::user(),
-            token: $token,
             message: "logged-in successfully.",
         );
 
-        return new AuthenticatedResource($data);
+        return response()->json(
+            new AuthenticatedResource($data),
+            200
+        )->withCookie($cookie);
     }
 }

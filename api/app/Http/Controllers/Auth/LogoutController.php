@@ -12,8 +12,10 @@ class LogoutController extends Controller
     {
         Auth::logout();
 
+        $cookie = cookie()->forget("token");
+
         return response()->json([
             'message' => 'logged-out successfully and token invalidated.'
-        ], 200);
+        ], 200)->withCookie($cookie);
     }
 }
