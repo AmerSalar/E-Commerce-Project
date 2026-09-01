@@ -2,11 +2,9 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 
 // placeholder components
-function Home() {
-  return <h1 className="text-xl font-bold">Welcome Home</h1>;
-}
 function Profile() {
   return <h1 className="text-xl font-bold">Your Profile</h1>;
 }

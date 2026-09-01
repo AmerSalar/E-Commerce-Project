@@ -1,6 +1,20 @@
 import { Link } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Login() {
+  const handleSubmit = async () => {
+    try {
+      response = await api.get("/carts/my-cart");
+
+      console.log(response.data);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        console.log("Unauthenticated!");
+      } else {
+        console.log("status: " + error.response?.status);
+      }
+    }
+  };
   return (
     <>
       {/*
@@ -24,7 +38,7 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="email"

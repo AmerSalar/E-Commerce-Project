@@ -23,10 +23,7 @@ export default function Register() {
       // axios post takes path + payload
       const response = await api.post("/register", formData);
 
-      console.log(response.data.token);
-      if (response.data.token) {
-        localStorage.setItem("auth_token", response.data.token);
-      }
+      console.log(response.data);
 
       <Navigate to={"/"} />;
     } catch (error) {

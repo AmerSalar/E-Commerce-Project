@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\{
     RegisterController,
     ResetPasswordController
 };
+use App\Http\Middleware\Auth\AuthenticateFromCookie;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -80,7 +81,7 @@ Route::prefix('categories')
  * AUTHENTICATED ROUTES (PRIVATE) NEED JWT
  *
  */
-Route::middleware('auth:api')->group(function () {
+Route::middleware([AuthenticateFromCookie::class, 'auth:api'])->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     /**
      *
@@ -106,14 +107,14 @@ Route::middleware('auth:api')->group(function () {
         ->group(function () {
             Route::get('/', 'index');
             Route::get('/{user}', 'show');
-            Route::post('/{user}',  'update');
-            Route::post('/{user}/roles/{role_id}',  'assign')
+            Route::post('/{user}', 'update');
+            Route::post('/{user}/roles/{role_id}', 'assign')
                 ->whereNumber('user')
                 ->whereNumber('role_id');
-            Route::delete('/{user}/roles/{role_id}',  'revoke')
+            Route::delete('/{user}/roles/{role_id}', 'revoke')
                 ->whereNumber('user')
                 ->whereNumber('role_id');
-            Route::delete('/{user}',  'destroy');
+            Route::delete('/{user}', 'destroy');
         });
     /**
      *
@@ -140,7 +141,7 @@ Route::middleware('auth:api')->group(function () {
         ->controller(ProductController::class)
         ->group(function () {
             Route::post('/', 'store');
-            Route::post('/{product}',  'update');
+            Route::post('/{product}', 'update');
             Route::delete('/{product}', 'destroy');
         });
     /**
@@ -153,9 +154,9 @@ Route::middleware('auth:api')->group(function () {
         ->controller(CategoryController::class)
         ->group(function () {
             Route::post('/', 'store')->name('store');
-            Route::post('/{category}',  'update')
+            Route::post('/{category}', 'update')
                 ->name('update');
-            Route::delete('/{category}',  'destroy')
+            Route::delete('/{category}', 'destroy')
                 ->name('destroy');
         });
     /**
