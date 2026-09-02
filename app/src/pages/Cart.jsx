@@ -4,16 +4,16 @@ import api from "../api/axios";
 export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const fetchItems = async () => {
+    const response = await api.get(`/carts/my-cart`);
+
+    // fix this mess
+    setItems(response.data.items);
+
+    console.log(response.data.items);
+  };
   useEffect(() => {
     try {
-      const fetchItems = async () => {
-        const response = await api.get(`/carts/my-cart`);
-
-        // fix this mess
-        setItems(response.data.items);
-
-        console.log(response.data.items);
-      };
       fetchItems();
     } catch (error) {
       console.log("error: " + error);
@@ -26,6 +26,8 @@ export default function Cart() {
       const response = await api.post("/carts/my-cart/" + id);
 
       console.log(response.data.message);
+
+      fetchItems();
     } catch (error) {
       if (error.response?.status === 401) {
         console.log("Unauthenticated!");
@@ -66,7 +68,7 @@ export default function Cart() {
                 <div className="">
                   <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
                   <p className="mt-1 text-lg font-medium text-gray-900">
-                    {product.price}
+                    ${product.price} * {product.quantity}
                   </p>
                 </div>
                 <button
