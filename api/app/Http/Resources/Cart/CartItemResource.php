@@ -34,6 +34,11 @@ class CartItemResource extends JsonResource
              * @example 1
              */
             'quantity' => $this->pivot->quantity,
+            /**
+             * @var string
+             * @example "storage/products/cover.webp"
+             */
+            'picture_url' => $this->picture_url,
         ];
     }
 }
