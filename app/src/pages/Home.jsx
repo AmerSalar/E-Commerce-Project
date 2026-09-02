@@ -4,11 +4,13 @@ import api from "../api/axios";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
   useEffect(() => {
     try {
       const fetchProducts = async () => {
-        const response = await api.get("/products?inlcude=categories&page=3");
+        const response = await api.get(`/products?page=${page}&perPage=16`);
 
+        // fix this mess
         setProducts(response.data.data.data);
 
         console.log(response.data.data.data);
@@ -19,7 +21,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page]);
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -33,12 +35,19 @@ export default function Home() {
                 src={
                   import.meta.env.VITE_BACKEND_URL + "/" + product.picture_url
                 }
-                className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
+                className="aspect-square w-full rounded-lg bg-gray-200 object-cover xl:aspect-7/8"
               />
-              <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-lg font-medium text-gray-900">
-                {product.price}
-              </p>
+              <div className="flex flex-row justify-between">
+                <div className="">
+                  <h3 className="mt-4 text-sm text-gray-700">{product.name}</h3>
+                  <p className="mt-1 text-lg font-medium text-gray-900">
+                    {product.price}
+                  </p>
+                </div>
+                <button className="min-w-28 max-h-10 bg-indigo-500 text-white mt-4 rounded-2xl">
+                  Add to cart
+                </button>
+              </div>
             </a>
           ))}
         </div>
