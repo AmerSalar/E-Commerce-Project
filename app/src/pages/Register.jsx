@@ -1,8 +1,9 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../api/axios";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,7 +26,7 @@ export default function Register() {
 
       console.log(response.data);
 
-      <Navigate to={"/"} />;
+      navigate("/", { replace: true });
     } catch (error) {
       if (error.response?.status === 422) {
         console.log("validation errors!");
