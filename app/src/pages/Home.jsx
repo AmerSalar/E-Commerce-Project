@@ -4,6 +4,7 @@ import api from "../api/axios";
 export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [alert, setAlert] = useState(null);
   const [page, setPage] = useState(1);
   useEffect(() => {
     try {
@@ -27,6 +28,11 @@ export default function Home() {
       const response = await api.post("/carts/my-cart/" + id);
 
       console.log(response.data.message);
+
+      setTimeout(() => {
+        setAlert(null);
+      }, 1000);
+      setAlert("item added to cart successfully!");
     } catch (error) {
       if (error.response?.status === 401) {
         console.log("Unauthenticated!");
@@ -50,6 +56,18 @@ export default function Home() {
   };
   return (
     <div className="bg-white">
+      {alert && (
+        <div className="flex left-0  fixed w-[40%] h-10 bg-emerald-600 items-center rounded-2xl justify-between px-5 ">
+          <p className="text-white">{alert}</p>
+          <button
+            className="text-white px-4 py-2 rounded-2xl hover:text-zinc-200"
+            onClick={() => setAlert(null)}
+          >
+            x
+          </button>
+        </div>
+      )}
+
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
 
