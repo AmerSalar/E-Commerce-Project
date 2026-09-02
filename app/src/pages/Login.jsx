@@ -1,18 +1,42 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const handleSubmit = async () => {
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      response = await api.get("/carts/my-cart");
+      // axios post takes path + payload
+      const response = await api.post("/login", formData);
 
       console.log(response.data);
+
+      setUser(response.data.user);
+
+      navigate("/", { replace: true });
     } catch (error) {
-      if (error.response?.status === 401) {
-        console.log("Unauthenticated!");
+      if (error.response?.status === 422) {
+        console.log("validation errors!");
       } else {
-        console.log("status: " + error.response?.status);
+        console.log("error: " + error);
       }
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -53,6 +77,7 @@ export default function Login() {
                   type="email"
                   required
                   autoComplete="email"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -82,6 +107,7 @@ export default function Login() {
                   type="password"
                   required
                   autoComplete="current-password"
+                  onChange={handleChange}
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
               </div>
@@ -92,7 +118,7 @@ export default function Login() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                Sign in
+                Log in
               </button>
             </div>
           </form>

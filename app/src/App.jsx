@@ -3,12 +3,9 @@ import RootLayout from "./layouts/RootLayout";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Profile from "./pages/Profile";
 
 // placeholder components
-function Profile() {
-  return <h1 className="text-xl font-bold">Your Profile</h1>;
-}
-
 function NotFound() {
   return (
     <h1 className="text-xl font-bold text-red-600">404 - Page Not Found 🚫</h1>
