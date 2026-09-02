@@ -8,14 +8,14 @@ export default function Home() {
       <button
         onClick={async () => {
           try {
-            response = await api.get("/carts/my-cart");
+            const response = await api.get("/carts/my-cart");
 
             console.log(response.data);
           } catch (error) {
             if (error.response?.status === 401) {
               console.log("Unauthenticated!");
             } else {
-              console.log("status: " + error.response?.status);
+              console.log("status: " + error);
             }
           }
         }}

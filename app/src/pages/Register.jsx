@@ -1,9 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,6 +27,8 @@ export default function Register() {
       const response = await api.post("/register", formData);
 
       console.log(response.data);
+
+      setUser(response.data.user);
 
       navigate("/", { replace: true });
     } catch (error) {
