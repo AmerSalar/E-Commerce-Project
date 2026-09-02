@@ -14,6 +14,12 @@ export default function RootLayout() {
             Home
           </Link>
           <Link
+            to="/my-cart"
+            className="font-semibold text-indigo-500 hover:text-indigo-300"
+          >
+            Cart
+          </Link>
+          <Link
             to="/me"
             className="font-semibold text-indigo-500 hover:text-indigo-300"
           >

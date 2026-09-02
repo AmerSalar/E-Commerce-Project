@@ -1,27 +1,26 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 
-export default function Home() {
+export default function Cart() {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState([]);
-  const [page, setPage] = useState(1);
+  const [items, setItems] = useState([]);
   useEffect(() => {
     try {
-      const fetchProducts = async () => {
-        const response = await api.get(`/products?page=${page}&perPage=16`);
+      const fetchItems = async () => {
+        const response = await api.get(`/carts/my-cart`);
 
         // fix this mess
-        setProducts(response.data.data.data);
+        setItems(response.data.items);
 
-        console.log(response.data.data.data);
+        console.log(response.data.items);
       };
-      fetchProducts();
+      fetchItems();
     } catch (error) {
       console.log("error: " + error);
     } finally {
       setLoading(false);
     }
-  }, [page]);
+  }, []);
   const addToCart = async (id) => {
     try {
       const response = await api.post("/carts/my-cart/" + id);
@@ -54,7 +53,7 @@ export default function Home() {
         <h2 className="sr-only">Products</h2>
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
-          {products.map((product) => (
+          {items.map((product) => (
             <a key={product.id} href={product.href} className="group">
               <img
                 alt={product.name + " cover"}
@@ -74,7 +73,7 @@ export default function Home() {
                   onClick={() => addToCart(product.id)}
                   className="min-w-28 max-h-10 bg-indigo-500 hover:bg-indigo-400 text-white mt-4 rounded-2xl"
                 >
-                  Add to cart
+                  Add more
                 </button>
               </div>
             </a>

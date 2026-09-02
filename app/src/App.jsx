@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 
 // placeholder components
 function NotFound() {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "me",
         element: <Profile />,
+      },
+      {
+        path: "my-cart",
+        element: <Cart />,
       },
     ],
   },
