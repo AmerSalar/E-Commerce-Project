@@ -7,21 +7,19 @@ export default function Cart() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [abandonOpen, setAbandonOpen] = useState(false);
   const fetchItems = async () => {
-    const response = await api.get(`/carts/my-cart`);
-
-    // fix this mess
-    setItems(response.data.items);
-
-    console.log(response.data.items);
-  };
-  useEffect(() => {
+    setLoading(true);
     try {
-      fetchItems();
+      const response = await api.get(`/carts/my-cart`);
+      setItems(response.data.items);
+      console.log(response.data.items);
     } catch (error) {
       console.log("error: " + error);
     } finally {
       setLoading(false);
     }
+  };
+  useEffect(() => {
+    fetchItems();
   }, []);
   const addToCart = async (id) => {
     try {
@@ -137,7 +135,7 @@ export default function Cart() {
               </div>
             </>
           )}
-          {items.length === 0 && <div>Cart is empty!</div>}
+          {items.length === 0 && loading === false && <div>Cart is empty!</div>}
         </>
       )}
     </div>

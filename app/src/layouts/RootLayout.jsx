@@ -1,19 +1,23 @@
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 export default function RootLayout() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Top Navigation */}
       <nav className="flex justify-between border-b border-gray-200 bg-white p-4">
-        <div>
+        <div className="flex gap-6">
           {isAuthenticated && (
             <div className="flex gap-8 text-lg">
               <Link
                 to="/"
                 className="font-semibold text-indigo-500 hover:text-indigo-300"
               >
-                Home
+                <img
+                  className="scale-125 h-8"
+                  src={import.meta.env.VITE_BACKEND_URL + "/assets/logo.svg"}
+                  alt="website logo"
+                />
               </Link>
               <Link
                 to="/my-cart"
@@ -31,7 +35,7 @@ export default function RootLayout() {
           )}
         </div>
 
-        {!isAuthenticated && (
+        {!isAuthenticated && loading === false && (
           <div className="flex gap-6">
             <Link
               to="/login"

@@ -34,7 +34,7 @@ export default function Home() {
   }, [page]);
   const addToCart = async (id) => {
     if (!isAuthenticated) {
-      navigate("/login", { replace: true });
+      navigate("/login", { replace: false });
     } else {
       try {
         const response = await api.post("/carts/my-cart/" + id);
