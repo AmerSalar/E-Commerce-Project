@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->decimal('price', 8, 2);
             $table->unsignedInteger('quantity');
-            $table->string('picture_url')->default("/assets/cover.webp");
+            $table->string('picture_url')->default("assets/cover.webp");
             $table->timestamps();
         });
     }
