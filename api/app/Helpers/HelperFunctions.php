@@ -43,7 +43,7 @@ class HelperFunctions
             $lifespan,
             '/',
             null,
-            config('app.env') === "production",
+            false, // change when in production 
             true,
             false,
             "Lax"

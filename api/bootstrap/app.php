@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\HelperFunctions;
+use App\Http\Middleware\Auth\AuthenticateFromCookie;
 use App\Http\Resources\Auth\AuthResource;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -8,6 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -18,7 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'auth.cookie' => AuthenticateFromCookie::class,
+        ]);
+        $middleware->priority([
+            AuthenticateFromCookie::class,
+            Authenticate::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
@@ -27,7 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*') || $request->expectsJson())
-                return response()->json(new AuthResource((object)[
+                return response()->json(new AuthResource((object) [
                     'message' => "You are not authenticated!"
                 ]), 401);
         });

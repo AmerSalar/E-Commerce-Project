@@ -81,7 +81,7 @@ Route::prefix('categories')
  * AUTHENTICATED ROUTES (PRIVATE) NEED JWT
  *
  */
-Route::middleware([AuthenticateFromCookie::class, 'auth:api'])->group(function () {
+Route::middleware(['auth.cookie', 'auth:api'])->group(function () {
     Route::post('/logout', LogoutController::class)->name('logout');
     /**
      *
