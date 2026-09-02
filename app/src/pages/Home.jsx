@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [alert, setAlert] = useState(null);
+  const colors = {
+    success: "#70bb90",
+    fail: "#dd9070",
+    info: "#baba60",
+  };
   const [page, setPage] = useState(1);
   useEffect(() => {
     try {
@@ -24,20 +33,27 @@ export default function Home() {
     }
   }, [page]);
   const addToCart = async (id) => {
-    try {
-      const response = await api.post("/carts/my-cart/" + id);
+    if (!isAuthenticated) {
+      navigate("/login", { replace: true });
+    } else {
+      try {
+        const response = await api.post("/carts/my-cart/" + id);
 
-      console.log(response.data.message);
+        console.log(response.data.message);
 
-      setTimeout(() => {
-        setAlert(null);
-      }, 1000);
-      setAlert("item added to cart successfully!");
-    } catch (error) {
-      if (error.response?.status === 401) {
-        console.log("Unauthenticated!");
-      } else {
-        console.log("error: " + error);
+        setTimeout(() => {
+          setAlert(null);
+        }, 1000);
+        setAlert({
+          message: "item added to cart successfully!",
+          color: colors.success,
+        });
+      } catch (error) {
+        if (error.response?.status === 401) {
+          console.log("Unauthenticated!");
+        } else {
+          console.log("error: " + error);
+        }
       }
     }
   };
@@ -57,8 +73,11 @@ export default function Home() {
   return (
     <div className="bg-white">
       {alert && (
-        <div className="flex left-0  fixed w-[40%] h-10 bg-emerald-600 items-center rounded-2xl justify-between px-5 ">
-          <p className="text-white">{alert}</p>
+        <div
+          style={{ backgroundColor: alert.color }}
+          className="flex left-0  fixed w-[40%] h-10 items-center rounded-2xl justify-between px-5 "
+        >
+          <p className="text-white">{alert.message}</p>
           <button
             className="text-white px-4 py-2 rounded-2xl hover:text-zinc-200"
             onClick={() => setAlert(null)}

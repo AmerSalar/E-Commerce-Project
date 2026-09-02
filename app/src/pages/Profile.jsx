@@ -1,7 +1,8 @@
-import api from "../api/axios";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   return (
     <div className="flex flex-col items-center text-center gap-1 mt-10">
@@ -34,11 +35,6 @@ export default function Profile() {
               </div>
             </>
           )}
-        </>
-      )}
-      {!user && (
-        <>
-          <h1 className="text-4xl font-bold text-zinc-800">Guest Profile</h1>
         </>
       )}
     </div>
