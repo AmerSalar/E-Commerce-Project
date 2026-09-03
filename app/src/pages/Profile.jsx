@@ -14,7 +14,9 @@ export default function Profile() {
             <>
               <h1 className="text-2xl text-zinc-800 mt-4">Roles:</h1>
               {user.roles.map((role) => (
-                <h1 className="text-lg text-zinc-800">{role.name}</h1>
+                <h1 key={role.id} className="text-lg text-zinc-800">
+                  {role.name}
+                </h1>
               ))}
             </>
           )}
@@ -23,7 +25,7 @@ export default function Profile() {
               <h1 className="text-2xl text-zinc-800 mt-4">Addresses:</h1>
               <div className="flex flex-wrap gap-4 mt-4">
                 {user.addresses.map((address) => (
-                  <div className="border p-4 rounded-2xl">
+                  <div key={address.id} className="border p-4 rounded-2xl">
                     <h1 className="text-lg text-zinc-800">{address.phone}</h1>
                     <h1 className="text-lg text-zinc-800">{address.city}</h1>
                     <h1 className="text-lg text-zinc-800">{address.street}</h1>

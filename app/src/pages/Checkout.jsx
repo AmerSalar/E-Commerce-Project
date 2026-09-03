@@ -16,9 +16,8 @@ export default function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
-    if (user.addresses) {
-      setSelectedAddress(user.addresses[0]);
-    }
+    setAddress(user.addresses[0]);
+    setSelectedAddress(user.addresses[0]);
   }, []);
 
   const handleChange = (e) => {

@@ -14,14 +14,15 @@ class UserProfileController extends Controller
 {
     public function __construct(
         protected UserProfileService $profileService
-    ) {}
+    ) {
+    }
     /**
      * Get my profile
      */
     public function profile(Request $request)
     {
         return new UserResource(
-            $request->user()->load(['roles', 'addresses'])
+            $request->user()->loadRelations(['roles', 'addresses'])
         );
     }
     /**
