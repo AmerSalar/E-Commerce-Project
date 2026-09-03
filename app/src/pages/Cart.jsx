@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
+import Notification from "../components/Notification";
 
 export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
   const [abandonOpen, setAbandonOpen] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -23,17 +25,41 @@ export default function Cart() {
     fetchItems();
   }, []);
   const addToCart = async (id) => {
+    setAlert(null);
     try {
       const response = await api.post("/carts/my-cart/" + id);
 
       console.log(response.data.message);
 
       fetchItems();
+
+      setTimeout(() => {
+        setAlert(null);
+      }, 1500);
+      setAlert({
+        message: "Item added successfully!",
+        status: "success",
+      });
     } catch (error) {
+      switch (error.response?.status) {
+        case 401:
+          setAlert({
+            message: "Unauthenticated!",
+            status: "error",
+          });
+          break;
+        case 422:
+          setAlert({
+            message: error.response.data.message,
+            status: "error",
+          });
+          break;
+        default:
+      }
       if (error.response?.status === 401) {
         console.log("Unauthenticated!");
       } else {
-        console.log("error: " + error);
+        console.log(error.response);
       }
     }
   };
@@ -42,12 +68,25 @@ export default function Cart() {
       await api.delete("/carts/my-cart");
       setAbandonOpen((prev) => !prev);
       fetchItems();
+
+      setTimeout(() => {
+        setAlert(null);
+      }, 1500);
+      setAlert({
+        message: "Cart reset successfully!",
+        status: "success",
+      });
     } catch (error) {
       console.log("error: " + error);
     }
   };
   return (
     <>
+      {alert && (
+        <div className="fixed">
+          <Notification label={alert.message} status={alert.status} />
+        </div>
+      )}
       {items.length > 0 && (
         <>
           <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -128,7 +167,9 @@ export default function Cart() {
           </div>
         </>
       )}
-      {items.length === 0 && loading === false && <div>Cart is empty!</div>}
+      {items.length === 0 && loading === false && (
+        <div className="text-center mt-10">Cart is empty!</div>
+      )}
     </>
   );
 }

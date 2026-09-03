@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Notification from "../components/Notification";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -9,11 +10,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [alert, setAlert] = useState(null);
-  const colors = {
-    success: "#70bb90",
-    fail: "#dd9070",
-    info: "#baba60",
-  };
   const [page, setPage] = useState(1);
   useEffect(() => {
     try {
@@ -44,10 +40,10 @@ export default function Home() {
 
         setTimeout(() => {
           setAlert(null);
-        }, 1000);
+        }, 1500);
         setAlert({
           message: "item added to cart successfully!",
-          color: colors.success,
+          status: "success",
         });
       } catch (error) {
         if (error.response?.status === 401) {
@@ -74,17 +70,8 @@ export default function Home() {
   return (
     <div className="bg-white">
       {alert && (
-        <div
-          style={{ backgroundColor: alert.color }}
-          className="flex left-0  fixed w-[40%] h-10 items-center rounded-2xl justify-between px-5 "
-        >
-          <p className="text-white">{alert.message}</p>
-          <button
-            className="text-white px-4 py-2 rounded-2xl hover:text-zinc-200"
-            onClick={() => setAlert(null)}
-          >
-            x
-          </button>
+        <div className="fixed">
+          <Notification label={alert.message} status={alert.status} />
         </div>
       )}
 
