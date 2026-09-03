@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { refreshUser } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,7 +28,7 @@ export default function Register() {
 
       console.log(response.data);
 
-      setUser(response.data.user);
+      refreshUser();
 
       navigate("/", { replace: true });
     } catch (error) {

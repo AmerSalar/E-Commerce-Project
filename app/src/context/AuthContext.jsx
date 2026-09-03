@@ -1,4 +1,10 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import api from "../api/axios";
 
 const AuthContext = createContext(null);
@@ -7,26 +13,32 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const checkAuth = useCallback(async () => {
+    try {
+      const { data } = await api.get("/me");
+      console.log(data);
+      setUser(data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  });
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data } = await api.get("/me");
-        setUser(data);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     checkAuth();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, loading, isAuthenticated: !!user }}
+      value={{
+        user,
+        setUser,
+        loading,
+        isAuthenticated: !!user,
+        refreshUser: checkAuth,
+      }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

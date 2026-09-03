@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const { setUser } = useAuth();
+  const { refreshUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ export default function Login() {
 
       console.log(response.data);
 
-      setUser(response.data.user);
+      refreshUser();
 
       navigate("/", { replace: true });
     } catch (error) {
