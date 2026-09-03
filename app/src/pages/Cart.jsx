@@ -32,12 +32,8 @@ export default function Cart() {
       console.log(response.data.message);
 
       fetchItems();
-
-      setTimeout(() => {
-        setAlert(null);
-      }, 1500);
       setAlert({
-        message: "Item added successfully!",
+        message: response.data.message,
         status: "success",
       });
     } catch (error) {
@@ -55,12 +51,15 @@ export default function Cart() {
           });
           break;
         default:
+          setAlert({
+            message: "Something went wrong!",
+            status: "error",
+          });
       }
-      if (error.response?.status === 401) {
-        console.log("Unauthenticated!");
-      } else {
-        console.log(error.response);
-      }
+    } finally {
+      setTimeout(() => {
+        setAlert(null);
+      }, 2000);
     }
   };
   const handleAbandon = async () => {
