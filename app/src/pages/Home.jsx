@@ -7,9 +7,12 @@ import Notification from "../components/Notification";
 export default function Home() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [selectedButton, setSelectedButton] = useState(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [alert, setAlert] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+
   const [page, setPage] = useState(1);
   useEffect(() => {
     try {
@@ -28,43 +31,51 @@ export default function Home() {
       setLoading(false);
     }
   }, [page]);
-  const addToCart = async (id) => {
+  const addToCart = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation(); // no click bubbling
+
     setAlert(null);
     if (!isAuthenticated) {
       navigate("/login", { replace: false });
-    } else {
-      try {
-        const response = await api.post("/carts/my-cart/" + id);
+      return;
+    }
 
-        setAlert({
-          message: response.data.message,
-          status: "success",
-        });
-      } catch (error) {
-        switch (error.response?.status) {
-          case 401:
-            setAlert({
-              message: "Unauthenticated!",
-              status: "error",
-            });
-            break;
-          case 422:
-            setAlert({
-              message: error.response.data.message,
-              status: "error",
-            });
-            break;
-          default:
-            setAlert({
-              message: "Something went wrong!",
-              status: "error",
-            });
-        }
-      } finally {
-        setTimeout(() => {
-          setAlert(null);
-        }, 3000);
+    try {
+      const response = await api.post("/carts/my-cart/" + id, {
+        quantity: quantity,
+      });
+
+      setAlert({
+        message: response.data.message,
+        status: "success",
+      });
+    } catch (error) {
+      switch (error.response?.status) {
+        case 401:
+          setAlert({
+            message: "Unauthenticated!",
+            status: "error",
+          });
+          break;
+        case 422:
+          setAlert({
+            message: error.response.data.message,
+            status: "error",
+          });
+          break;
+        default:
+          setAlert({
+            message: "Something went wrong!",
+            status: "error",
+          });
       }
+    } finally {
+      setTimeout(() => {
+        setAlert(null);
+      }, 3000);
+      setSelectedButton(null);
+      setQuantity(1);
     }
   };
   const getMyCart = async () => {
@@ -93,7 +104,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <a key={product.id} href={product.href} className="group">
+            <div key={product.id} className="group">
               <img
                 alt={product.name + " cover"}
                 src={
@@ -108,14 +119,37 @@ export default function Home() {
                     {product.price}
                   </p>
                 </div>
-                <button
-                  onClick={() => addToCart(product.id)}
-                  className="min-w-28 max-h-10 bg-indigo-500 hover:bg-indigo-400 text-white mt-4 rounded-2xl"
-                >
-                  Add to cart
-                </button>
+                {selectedButton !== product.id && (
+                  <button
+                    onClick={() => setSelectedButton(product.id)}
+                    className="min-w-28 max-h-10 bg-indigo-500 hover:bg-indigo-400 text-white mt-4 rounded-2xl"
+                  >
+                    Add to cart
+                  </button>
+                )}
+
+                {selectedButton === product.id && (
+                  <div className="flex max-h-10 mt-4 rounded-2xl">
+                    <input
+                      className="w-10 text-center text-lg outline-0 border-2 border-r-0 border-indigo-500 rounded-tl-2xl rounded-bl-2xl"
+                      type="number"
+                      id="quantity"
+                      name="quantity"
+                      min={1}
+                      max={10}
+                      value={quantity}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
+                    />
+                    <button
+                      onClick={(e) => addToCart(e, product.id)}
+                      className="min-w-18 bg-indigo-500 hover:bg-indigo-400 rounded-2xl text-white"
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
