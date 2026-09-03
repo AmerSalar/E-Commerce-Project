@@ -14,7 +14,7 @@ function NotFound() {
   );
 }
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,

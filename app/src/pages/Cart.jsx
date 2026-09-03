@@ -68,15 +68,19 @@ export default function Cart() {
       setAbandonOpen((prev) => !prev);
       fetchItems();
 
-      setTimeout(() => {
-        setAlert(null);
-      }, 1500);
       setAlert({
         message: "Cart reset successfully!",
         status: "success",
       });
     } catch (error) {
-      console.log("error: " + error);
+      setAlert({
+        message: "Something went wrong!",
+        status: "error",
+      });
+    } finally {
+      setTimeout(() => {
+        setAlert(null);
+      }, 2000);
     }
   };
   return (

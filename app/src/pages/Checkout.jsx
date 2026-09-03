@@ -13,7 +13,13 @@ export default function Checkout() {
     street: "",
     building: 0,
   });
-  const [selectedAddress, setSelectedAddress] = useState(user.addresses[0]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+
+  useEffect(() => {
+    if (user.addresses) {
+      setSelectedAddress(user.addresses[0]);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setAddress((prev) => ({
