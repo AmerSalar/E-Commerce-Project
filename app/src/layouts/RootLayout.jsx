@@ -9,15 +9,18 @@ export default function RootLayout() {
         <div className="flex gap-6">
           {isAuthenticated && (
             <div className="flex gap-8 text-lg">
-              <Link
-                to="/"
-                className="font-semibold text-indigo-500 hover:text-indigo-300"
-              >
+              <Link to={"/"}>
                 <img
                   className="scale-125 h-8"
                   src={import.meta.env.VITE_BACKEND_URL + "/assets/logo.svg"}
                   alt="website logo"
                 />
+              </Link>
+              <Link
+                to="/"
+                className="font-semibold text-indigo-500 hover:text-indigo-300"
+              >
+                Home
               </Link>
               <Link
                 to="/my-cart"
