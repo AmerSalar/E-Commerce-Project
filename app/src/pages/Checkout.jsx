@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { Link } from "react-router-dom";
+import Selection from "../components/Selection";
+import { useAuth } from "../context/AuthContext";
 
 export default function Checkout() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState({
     phone: "",
@@ -10,6 +13,7 @@ export default function Checkout() {
     street: "",
     building: 0,
   });
+  const [selectedAddress, setSelectedAddress] = useState(user.addresses[0]);
 
   const handleChange = (e) => {
     setAddress((prev) => ({
@@ -32,7 +36,6 @@ export default function Checkout() {
   };
   return (
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Please provide an address
@@ -40,7 +43,19 @@ export default function Checkout() {
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="flex justify-center">
+          <Selection
+            label="Select from your addresses"
+            items={user.addresses}
+            selected={selectedAddress}
+            onChange={(item) => {
+              (setSelectedAddress(item), setAddress(item));
+            }}
+            noOptionLabel="You don't have a saved address!"
+          />
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6 mt-8">
           <div>
             <label
               htmlFor="phone"
@@ -53,6 +68,7 @@ export default function Checkout() {
                 id="phone"
                 name="phone"
                 type="text"
+                value={address.phone !== "" ? address.phone : ""}
                 required
                 autoComplete="phone"
                 onChange={handleChange}
@@ -75,6 +91,7 @@ export default function Checkout() {
                 id="city"
                 name="city"
                 type="text"
+                value={address.city !== "" ? address.city : ""}
                 required
                 autoComplete="city"
                 onChange={handleChange}
@@ -97,6 +114,7 @@ export default function Checkout() {
                 id="street"
                 name="street"
                 type="text"
+                value={address.street !== "" ? address.street : ""}
                 required
                 autoComplete="street"
                 onChange={handleChange}
@@ -118,6 +136,7 @@ export default function Checkout() {
                 id="building"
                 name="building"
                 type="number"
+                value={address.building !== "" ? address.building : ""}
                 required
                 autoComplete="building"
                 onChange={handleChange}

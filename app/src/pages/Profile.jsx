@@ -10,7 +10,7 @@ export default function Profile() {
         <>
           <h1 className="text-4xl font-bold text-zinc-800">{user.name}</h1>
           <h1 className="text-2xl text-zinc-800">{user.email}</h1>
-          {user.roles && (
+          {user.roles.length > 0 && (
             <>
               <h1 className="text-2xl text-zinc-800 mt-4">Roles:</h1>
               {user.roles.map((role) => (
@@ -18,7 +18,7 @@ export default function Profile() {
               ))}
             </>
           )}
-          {user.addresses && (
+          {user.addresses.length > 0 && (
             <>
               <h1 className="text-2xl text-zinc-800 mt-4">Addresses:</h1>
               <div className="flex flex-wrap gap-4 mt-4">
