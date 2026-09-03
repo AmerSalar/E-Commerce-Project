@@ -36,21 +36,34 @@ export default function Home() {
       try {
         const response = await api.post("/carts/my-cart/" + id);
 
-        console.log(response.data.message);
-
-        setTimeout(() => {
-          setAlert(null);
-        }, 1500);
         setAlert({
-          message: "item added to cart successfully!",
+          message: response.data.message,
           status: "success",
         });
       } catch (error) {
-        if (error.response?.status === 401) {
-          console.log("Unauthenticated!");
-        } else {
-          console.log("error: " + error);
+        switch (error.response?.status) {
+          case 401:
+            setAlert({
+              message: "Unauthenticated!",
+              status: "error",
+            });
+            break;
+          case 422:
+            setAlert({
+              message: error.response.data.message,
+              status: "error",
+            });
+            break;
+          default:
+            setAlert({
+              message: "Something went wrong!",
+              status: "error",
+            });
         }
+      } finally {
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000);
       }
     }
   };

@@ -39,6 +39,7 @@ export default function Profile() {
           )}
         </>
       )}
+      {!user && <h1 className="text-4xl font-bold text-zinc-800">Guest</h1>}
     </div>
   );
 }

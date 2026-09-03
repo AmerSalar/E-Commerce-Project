@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Navigate, replace, useNavigate} from "react-router-dom";
 import { router } from "../App";
 
 const api = axios.create({
@@ -25,7 +24,9 @@ api.interceptors.response.use(
           router.navigate('/login', {replace: true})
         }
       }
+
     }
+    return Promise.reject(error);
   }
 )
 

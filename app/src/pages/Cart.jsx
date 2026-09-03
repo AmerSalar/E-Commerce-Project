@@ -59,7 +59,7 @@ export default function Cart() {
     } finally {
       setTimeout(() => {
         setAlert(null);
-      }, 2000);
+      }, 3000);
     }
   };
   const handleAbandon = async () => {
@@ -80,7 +80,7 @@ export default function Cart() {
     } finally {
       setTimeout(() => {
         setAlert(null);
-      }, 2000);
+      }, 3000);
     }
   };
   return (
