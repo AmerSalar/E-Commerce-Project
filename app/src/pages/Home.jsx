@@ -33,6 +33,7 @@ export default function Home() {
     }
   }, [page]);
   const addToCart = async (id) => {
+    setAlert(null);
     if (!isAuthenticated) {
       navigate("/login", { replace: false });
     } else {

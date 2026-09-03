@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 // placeholder components
 function NotFound() {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "my-cart",
         element: <Cart />,
+      },
+      {
+        path: "my-cart/checkout",
+        element: <Checkout />,
       },
     ],
   },
