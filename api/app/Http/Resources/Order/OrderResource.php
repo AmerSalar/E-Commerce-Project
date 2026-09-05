@@ -41,7 +41,8 @@ class OrderResource extends JsonResource
             /**
              * @var OrderItemResource
              */
-            'items' => OrderItemResource::collection($this->items)
+            'items' => OrderItemResource::collection($this->items),
+            'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
 }

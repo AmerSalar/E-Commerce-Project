@@ -3,12 +3,7 @@ import api from "../api/axios";
 import { Link, useParams } from "react-router-dom";
 import Notification from "../components/Notification";
 
-export default function Order() {
-  const colors = {
-    pending: "#a0a000",
-    cancelled: "#a00000",
-    delivered: "#00a000",
-  };
+export default function Orders() {
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState({ items: [] });
   const [abandonOpen, setAbandonOpen] = useState(false);
@@ -127,16 +122,7 @@ export default function Order() {
                   </div>
                 )}
 
-                <p
-                  className="flex items-center"
-                  style={{ color: colors[order.status] }}
-                >
-                  ⬤ {order.status}
-                </p>
-                <p className="flex items-center">${order.total_payment}</p>
-                <p className="flex items-center">
-                  Ordered at {order.created_at}
-                </p>
+                <p className="flex items-center">Order is {order.status}</p>
               </div>
             </div>
           </div>
