@@ -110,7 +110,7 @@ export default function Cart() {
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
               {items.map((product) => (
-                <a key={product.id} href={product.href} className="group">
+                <div key={product.id} className="group">
                   {product.quantity > 1 && (
                     <div className="flex absolute bg-[#00000090] w-12 h-12 justify-center items-center rounded-full">
                       <p className="text-2xl text-white font-black">
@@ -192,7 +192,7 @@ export default function Cart() {
                       </div>
                     )}
                   </div>
-                </a>
+                </div>
               ))}
             </div>
             <div className="flex gap-2">

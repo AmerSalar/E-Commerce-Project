@@ -12,8 +12,8 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [alert, setAlert] = useState(null);
   const [quantity, setQuantity] = useState(1);
-
   const [page, setPage] = useState(1);
+
   useEffect(() => {
     try {
       const fetchProducts = async () => {
@@ -97,7 +97,8 @@ export default function Home() {
                 src={
                   import.meta.env.VITE_BACKEND_URL + "/" + product.picture_url
                 }
-                className="aspect-square w-full rounded-lg bg-gray-200 object-cover xl:aspect-7/8"
+                className="aspect-square w-full cursor-pointer rounded-lg bg-gray-200 object-cover xl:aspect-7/8"
+                onClick={() => navigate("/products/" + product.id)}
               />
               <div className="flex flex-row justify-between">
                 <div className="">
