@@ -3,25 +3,29 @@
         "name": "Red Dead Redemption 2",
         "description": "Open-world western action-adventure disc.",
         "price": 59.99,
-        "quantity": 30
+        "quantity": 30,
+        "picture_url": "assets/rdr2.webp"
     },
     {
         "name": "God of War Ragnarök",
         "description": "Norse mythology action-adventure disc.",
         "price": 69.99,
-        "quantity": 25
+        "quantity": 25,
+        "picture_url": "assets/ragnarok.webp"
     },
     {
         "name": "Marvel's Spider-Man 2",
         "description": "Superhero action-adventure disc.",
         "price": 69.99,
-        "quantity": 28
+        "quantity": 28,
+        "picture_url": "assets/spiderman2.webp"
     },
     {
         "name": "Elden Ring",
         "description": "Challenging open-world dark fantasy RPG.",
         "price": 59.99,
-        "quantity": 40
+        "quantity": 40,
+        "picture_url": "assets/elden.webp"
     },
     {
         "name": "The Witcher 3: Wild Hunt",
@@ -39,19 +43,22 @@
         "name": "The Last of Us Part I",
         "description": "Post-apocalyptic narrative survival adventure.",
         "price": 69.99,
-        "quantity": 18
+        "quantity": 18,
+        "picture_url": "assets/tlou1.webp"
     },
     {
         "name": "The Last of Us Part II Remastered",
         "description": "Intense survival action and emotional drama.",
         "price": 49.99,
-        "quantity": 20
+        "quantity": 20,
+        "picture_url": "assets/tlou2.webp"
     },
     {
         "name": "Grand Theft Auto V",
         "description": "Blockbuster open-world crime action.",
         "price": 29.99,
-        "quantity": 50
+        "quantity": 50,
+        "picture_url": "assets/gtav.webp"
     },
     {
         "name": "Ghost of Tsushima Director's Cut",
@@ -63,7 +70,8 @@
         "name": "Horizon Forbidden West",
         "description": "Sci-fi post-apocalyptic action RPG.",
         "price": 49.99,
-        "quantity": 26
+        "quantity": 26,
+        "picture_url": "assets/hfw.webp"
     },
     {
         "name": "Final Fantasy VII Rebirth",
@@ -75,7 +83,8 @@
         "name": "Resident Evil 4 Remake",
         "description": "Survival horror action remake.",
         "price": 49.99,
-        "quantity": 32
+        "quantity": 32,
+        "picture_url": "assets/re4.webp"
     },
     {
         "name": "Baldur's Gate 3",
@@ -87,25 +96,29 @@
         "name": "Sekiro: Shadows Die Twice",
         "description": "High-difficulty shinobi action game.",
         "price": 59.99,
-        "quantity": 16
+        "quantity": 16,
+        "picture_url": "assets/sekiro.webp"
     },
     {
         "name": "Dark Souls III: The Fire Fades",
         "description": "Action RPG including all DLC expansions.",
         "price": 39.99,
-        "quantity": 22
+        "quantity": 22,
+        "picture_url": "assets/ds3.webp"
     },
     {
         "name": "Bloodborne",
         "description": "Gothic horror action RPG classic.",
         "price": 19.99,
-        "quantity": 14
+        "quantity": 14,
+        "picture_url": "assets/bloodborne.webp"
     },
     {
         "name": "Lies of P",
         "description": "Belle Époque soulslike action RPG.",
         "price": 49.99,
-        "quantity": 19
+        "quantity": 19,
+        "picture_url": "assets/liesofp.webp"
     },
     {
         "name": "Hogwarts Legacy",
@@ -117,13 +130,15 @@
         "name": "Forza Horizon 5",
         "description": "Open-world festival racing simulator.",
         "price": 59.99,
-        "quantity": 27
+        "quantity": 27,
+        "picture_url": "assets/fh5.webp"
     },
     {
         "name": "EA Sports FC 24",
         "description": "Authentic worldwide football simulation.",
         "price": 39.99,
-        "quantity": 45
+        "quantity": 45,
+        "picture_url": "assets/fc24.webp"
     },
     {
         "name": "Mortal Kombat 1",
@@ -135,7 +150,8 @@
         "name": "Alan Wake 2",
         "description": "Psychological survival horror mystery.",
         "price": 59.99,
-        "quantity": 17
+        "quantity": 17,
+        "picture_url": "assets/aw2.webp"
     },
     {
         "name": "Star Wars Jedi: Survivor",
@@ -147,6 +163,7 @@
         "name": "Monster Hunter: World",
         "description": "Cooperative action beast-hunting RPG.",
         "price": 29.99,
-        "quantity": 30
+        "quantity": 30,
+        "picture_url": "assets/monster_hunter.webp"
     }
 ]
