@@ -41,7 +41,7 @@ export default function Cart() {
 
       console.log(response.data.message);
 
-      fetchItems();
+      await fetchItems();
       setAlert({
         message: response.data.message,
         status: "success",
