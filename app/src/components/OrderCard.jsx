@@ -2,9 +2,9 @@ import { useState } from "react";
 
 export default function OrderCard({
   order,
-  handleCancel,
-  abandonOpen,
-  setAbandonOpen,
+  handleCancel = null,
+  abandonOpen = false,
+  setAbandonOpen = null,
 }) {
   const colors = {
     pending: "#a0a000",
@@ -43,7 +43,7 @@ export default function OrderCard({
         ))}
       </div>
       <div className="flex mt-10 gap-20">
-        {order.status === "pending" && (
+        {handleCancel && order.status === "pending" && (
           <div className="flex gap-2 w-48">
             {!abandonOpen && (
               <button
