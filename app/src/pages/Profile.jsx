@@ -1,9 +1,16 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const handleLogout = async () => {
+    await logout();
+    navigate("/", { replace: true });
+  };
+
   return (
     <div className="flex flex-col items-center text-center gap-1 mt-10">
       {user && (
@@ -37,6 +44,22 @@ export default function Profile() {
               </div>
             </>
           )}
+          <div className="flex flex-col justify-center w-48 mt-10 gap-4">
+            <button
+              className="bg-indigo-500 hover:bg-indigo-400 text-white p-2 rounded-2xl"
+              onClick={() => setConfirmOpen((prev) => !prev)}
+            >
+              Log-out
+            </button>
+            {confirmOpen && (
+              <button
+                onClick={handleLogout}
+                className="bg-rose-500 hover:bg-rose-400 text-white p-2 rounded-2xl"
+              >
+                Confirm
+              </button>
+            )}
+          </div>
         </>
       )}
       {!user && <h1 className="text-4xl font-bold text-zinc-800">Guest</h1>}

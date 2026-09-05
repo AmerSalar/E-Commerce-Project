@@ -23,9 +23,18 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  });
+  }, []);
+
   useEffect(() => {
     checkAuth();
+  }, [checkAuth]);
+
+  const logout = useCallback(async () => {
+    try {
+      await api.post("/logout");
+    } finally {
+      setUser(null);
+    }
   }, []);
 
   return (
@@ -36,6 +45,7 @@ export function AuthProvider({ children }) {
         loading,
         isAuthenticated: !!user,
         refreshUser: checkAuth,
+        logout,
       }}
     >
       {!loading && children}
