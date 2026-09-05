@@ -37,7 +37,7 @@ export default function Checkout() {
     try {
       const response = await api.post("/orders/order-now", address);
 
-      setOrdered(response.data.message);
+      setOrdered(response.data);
 
       setAlert({
         message: "Ordered successfully!",
@@ -210,11 +210,14 @@ export default function Checkout() {
         {ordered && (
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-              {ordered}
+              {ordered.message}
             </h2>
             <div className="flex justify-center gap-2 mt-4 text-sm">
               <p>Your order: </p>
-              <Link className="text-indigo-600 hover:text-indigo-400" to="/">
+              <Link
+                className="text-indigo-600 hover:text-indigo-400"
+                to={`/orders/${ordered.order.order_id}`}
+              >
                 Check out
               </Link>
             </div>

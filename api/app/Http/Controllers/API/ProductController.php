@@ -17,7 +17,9 @@ use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    public function __construct(protected InventoryService $inventory) {}
+    public function __construct(protected InventoryService $inventory)
+    {
+    }
     /**
      * get all products
      */

@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function __construct(protected CartShoppingService $cartShopping) {}
+    public function __construct(protected CartShoppingService $cartShopping)
+    {
+    }
     /**
      * get current user's cart
      */

@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
-    public function __construct(protected DeliveryService $delivery) {}
+    public function __construct(protected DeliveryService $delivery)
+    {
+    }
     /**
      * Get all current user's orders
      */
@@ -40,7 +42,7 @@ class OrderController extends Controller
         return new OrderResource($order->loadRelations('items'));
     }
     /**
-     * Get all pending current user's orders
+     * Get all current user's pending orders
      */
     public function pending(Request $request)
     {

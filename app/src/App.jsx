@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Product from "./pages/Product";
+import Order from "./pages/Order";
 
 // placeholder components
 function NotFound() {
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: "products/:id",
         element: <Product />,
+      },
+      {
+        path: "orders/:id",
+        element: <Order />,
       },
     ],
   },
