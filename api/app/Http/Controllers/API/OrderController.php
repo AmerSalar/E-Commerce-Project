@@ -30,7 +30,7 @@ class OrderController extends Controller
             ->latest()
             ->paginate($perPage);
 
-        return new OrderCollection($orders);
+        return response()->json(['orders' => OrderResource::collection($orders)], 200);
     }
     /**
      * Get one of current user's orders
@@ -52,7 +52,7 @@ class OrderController extends Controller
             ->withRelations($request->query('include', 'items'))
             ->paginate($perPage);
 
-        return new OrderCollection($orders);
+        return response()->json(['orders' => OrderResource::collection($orders)], 200);
     }
 
     /**
