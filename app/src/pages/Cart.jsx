@@ -6,6 +6,9 @@ import Notification from "../components/Notification";
 export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
+  const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedAction, setSelectedAction] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   const [abandonOpen, setAbandonOpen] = useState(false);
   const [alert, setAlert] = useState(null);
 
@@ -24,10 +27,17 @@ export default function Cart() {
   useEffect(() => {
     fetchItems();
   }, []);
-  const addToCart = async (id) => {
+  const handleTransaction = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
     setAlert(null);
     try {
-      const response = await api.post("/carts/my-cart/" + id);
+      const response =
+        selectedAction === "add"
+          ? await api.post("/carts/my-cart/" + id, {
+              quantity: quantity,
+            })
+          : await api.delete(`/carts/my-cart/${id}?quantity=${quantity}`);
 
       console.log(response.data.message);
 
@@ -60,6 +70,9 @@ export default function Cart() {
       setTimeout(() => {
         setAlert(null);
       }, 3000);
+      setSelectedButton(null);
+      setSelectedAction(null);
+      setQuantity(1);
     }
   };
   const handleAbandon = async () => {
@@ -124,12 +137,60 @@ export default function Cart() {
                         ${product.price}
                       </p>
                     </div>
-                    <button
-                      onClick={() => addToCart(product.id)}
-                      className="min-w-28 max-h-10 bg-indigo-500 hover:bg-indigo-400 text-white mt-4 rounded-2xl"
-                    >
-                      Add more
-                    </button>
+                    {selectedButton !== product.id && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedButton(product.id);
+                            setSelectedAction("remove");
+                          }}
+                          className="min-w-18 max-h-10 bg-rose-600 hover:bg-rose-500 text-white mt-4 rounded-2xl"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedButton(product.id);
+                            setSelectedAction("add");
+                          }}
+                          className="min-w-10 max-h-10 bg-indigo-500 hover:bg-indigo-400 text-white mt-4 rounded-2xl"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    )}
+
+                    {selectedButton === product.id && (
+                      <div className="flex max-h-10 mt-4 rounded-2xl">
+                        <input
+                          className="w-10 text-center text-lg outline-0 border-2 border-r-0 rounded-tl-2xl rounded-bl-2xl"
+                          type="number"
+                          id="quantity"
+                          name="quantity"
+                          min={1}
+                          max={10}
+                          value={quantity}
+                          onChange={(e) => setQuantity(Number(e.target.value))}
+                        />
+
+                        {selectedAction === "add" && (
+                          <button
+                            onClick={(e) => handleTransaction(e, product.id)}
+                            className="min-w-18 bg-indigo-500 hover:bg-indigo-400 rounded-2xl text-white"
+                          >
+                            Add
+                          </button>
+                        )}
+                        {selectedAction === "remove" && (
+                          <button
+                            onClick={(e) => handleTransaction(e, product.id)}
+                            className="min-w-18 bg-rose-600 hover:bg-rose-500 rounded-2xl text-white"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </a>
               ))}
