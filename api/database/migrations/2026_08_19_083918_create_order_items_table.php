@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,6 +18,7 @@ return new class extends Migration
             $table->unique(['order_id', 'product_id']);
             $table->string('item_name', 128);
             $table->decimal('item_price', 8, 2)->default(0.00);
+            $table->string('item_picture')->default('assets/cover.webp');
             $table->timestamps();
         });
     }

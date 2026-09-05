@@ -28,6 +28,7 @@ class OrderItemResource extends JsonResource
              * @example 9.99
              */
             'item_price' => $this->price,
+            'item_picture' => $this->picture_url,
             /**
              * @var integer
              * @example 1

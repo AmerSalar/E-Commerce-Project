@@ -15,7 +15,7 @@ export default function OrderCard({
     <div className="bg-gray-100 p-4">
       <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
         {order.items.map((product) => (
-          <div key={product.id} className="group">
+          <div key={product.product_id} className="group">
             {product.quantity > 1 && (
               <div className="flex absolute bg-[#00000090] w-12 h-12 justify-center items-center rounded-full">
                 <p className="text-2xl text-white font-black">
@@ -26,7 +26,9 @@ export default function OrderCard({
 
             <img
               alt={product.item_name + " cover"}
-              src={import.meta.env.VITE_BACKEND_URL + "/" + product.picture_url}
+              src={
+                import.meta.env.VITE_BACKEND_URL + "/" + product.item_picture
+              }
               className="aspect-square w-full rounded-lg bg-gray-200 object-cover xl:aspect-7/8"
             />
             <div className="flex flex-row justify-between">

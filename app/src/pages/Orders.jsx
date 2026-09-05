@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import OrderCard from "../components/OrderCard";
+import { useNavigate } from "react-router-dom";
 
 export default function Orders() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [orders, setOrders] = useState([]);
 
@@ -28,7 +30,17 @@ export default function Orders() {
         <>
           <div className="flex flex-col gap-4 mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
             {orders.map((order) => {
-              return <OrderCard order={order} />;
+              return (
+                <div
+                  key={order.order_id}
+                  className="cursor-pointer"
+                  onClick={() =>
+                    navigate("/orders/" + order.order_id, { replace: false })
+                  }
+                >
+                  <OrderCard order={order} />
+                </div>
+              );
             })}
           </div>
         </>
