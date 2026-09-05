@@ -78,19 +78,6 @@ export default function Home() {
       setQuantity(1);
     }
   };
-  const getMyCart = async () => {
-    try {
-      const response = await api.get("/carts/my-cart");
-
-      console.log(response.data.items);
-    } catch (error) {
-      if (error.response?.status === 401) {
-        console.log("Unauthenticated!");
-      } else {
-        console.log("error: " + error);
-      }
-    }
-  };
   return (
     <div className="bg-white">
       {alert && (
@@ -131,7 +118,7 @@ export default function Home() {
                 {selectedButton === product.id && (
                   <div className="flex max-h-10 mt-4 rounded-2xl">
                     <input
-                      className="w-10 text-center text-lg outline-0 border-2 border-r-0 border-indigo-500 rounded-tl-2xl rounded-bl-2xl"
+                      className="w-10 text-center text-lg outline-0 border-2 border-r-0 rounded-tl-2xl rounded-bl-2xl"
                       type="number"
                       id="quantity"
                       name="quantity"
