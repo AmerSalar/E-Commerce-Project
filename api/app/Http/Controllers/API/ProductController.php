@@ -31,8 +31,7 @@ class ProductController extends Controller
             // this is ORDER BY id DESC
             ->latest('id')
             ->paginate($perPage);
-
-        return new ProductCollection($products);
+        return ProductResource::collection($products);
     }
     /**
      * get one product

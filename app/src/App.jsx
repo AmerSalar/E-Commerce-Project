@@ -9,6 +9,7 @@ import Checkout from "./pages/Checkout";
 import Product from "./pages/Product";
 import Order from "./pages/Order";
 import Orders from "./pages/Orders";
+import EditProfile from "./pages/EditProfile";
 
 // placeholder components
 function NotFound() {
@@ -24,12 +25,16 @@ export const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       {
-        index: true,
+        path: ":page",
         element: <Home />,
       },
       {
         path: "me",
         element: <Profile />,
+      },
+      {
+        path: "me/edit",
+        element: <EditProfile />,
       },
       {
         path: "my-cart",

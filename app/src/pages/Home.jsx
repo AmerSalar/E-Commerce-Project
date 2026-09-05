@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Notification from "../components/Notification";
 
@@ -10,19 +10,21 @@ export default function Home() {
   const [selectedButton, setSelectedButton] = useState(null);
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
+  const [paginationMeta, setPaginationMeta] = useState({});
   const [alert, setAlert] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
+  const { page } = useParams();
 
   useEffect(() => {
     try {
       const fetchProducts = async () => {
         const response = await api.get(`/products?page=${page}&perPage=16`);
 
-        // fix this mess
-        setProducts(response.data.data.data);
+        setProducts(response.data.data);
+        setPaginationMeta(response.data.meta);
 
-        console.log(response.data.data.data);
+        console.log(response.data.data);
       };
       fetchProducts();
     } catch (error) {
@@ -85,13 +87,11 @@ export default function Home() {
           <Notification label={alert.message} status={alert.status} />
         </div>
       )}
-
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
-
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {products.map((product) => (
-            <div key={product.id} className="group">
+            <div key={product.id} className="group h-100">
               <img
                 alt={product.name + " cover"}
                 src={
@@ -139,6 +139,29 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="flex justify-center items-center gap-3 mt-12 select-none">
+          <button
+            disabled={page == 1}
+            onClick={() => navigate("/" + (Number(page) - 1))}
+            className="flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100"
+            aria-label="Previous Page"
+          >
+            ‹
+          </button>
+
+          <span className="flex items-center justify-center px-4 h-10 text-sm font-semibold rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-xs">
+            {page}
+          </span>
+
+          <button
+            onClick={() => navigate("/" + (Number(page) + 1))}
+            disabled={Number(page) === paginationMeta.last_page}
+            className="flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 bg-white text-gray-700 shadow-sm transition hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:active:scale-100"
+            aria-label="Next Page"
+          >
+            ›
+          </button>
         </div>
       </div>
     </div>

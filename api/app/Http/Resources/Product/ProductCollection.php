@@ -15,10 +15,7 @@ class ProductCollection extends ResourceCollection
     public function toArray(Request $request): array
     {
         return [
-            'data' => $this->collection,
-            'meta' => [
-                "products_in_current_page" => $this->collection->count()
-            ]
+            'products' => $this->collection,
         ];
     }
 }

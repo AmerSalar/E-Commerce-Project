@@ -43,11 +43,11 @@ class UserProfileController extends Controller
      */
     public function password(ChangePasswordRequest $request)
     {
-        $data = $this->profileService->changePassword(
+        $resource = $this->profileService->changePassword(
             $request->user(),
             $request->validated('password')
         );
 
-        return new AuthenticatedResource($data);
+        return $resource;
     }
 }

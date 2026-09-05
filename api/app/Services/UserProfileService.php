@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\DTO\AuthData;
+use App\Helpers\HelperFunctions;
+use App\Http\Resources\Auth\AuthenticatedResource;
 use App\Models\User;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +25,7 @@ class UserProfileService
     /**
      * change password of user
      */
-    public function changePassword(User $user, string $validatedNewPassword): AuthData
+    public function changePassword(User $user, string $validatedNewPassword): JsonResource
     {
         return DB::transaction(function () use ($user, $validatedNewPassword) {
             $user->update([
@@ -33,11 +36,15 @@ class UserProfileService
 
             $token = Auth::login($user);
 
-            return new AuthData(
+            $cookie = HelperFunctions::makeCookie('token', $token, 24 * 60);
+
+            $data = new AuthData(
                 message: "Password changed successfully.",
                 user: $user,
-                token: $token,
             );
+
+            return response()->json(new AuthenticatedResource($data), 200)
+                ->withCookie($cookie);
         });
     }
 }

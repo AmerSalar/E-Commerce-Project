@@ -172,7 +172,6 @@ Route::middleware(['auth.cookie', 'auth:api'])->group(function () {
             Route::post('/my-cart/{product}', [CartController::class, 'push']);
             Route::delete('/my-cart/{product}', [CartController::class, 'pull']);
         });
-
     /**
      *
      * ORDERS
